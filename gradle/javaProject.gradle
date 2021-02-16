@@ -313,17 +313,19 @@ task cleanSourceDestination {
 // codeCoverageReport.finalizedBy cleanSourceDestination
 
 def execdestination = "${rootDir}/tests/execs"
-def executeDataDirectory = "${buildDir}/jacoco/jacoco.exec"
+def executeDataDirectory = "${buildDir}/jacoco"
 
 def sourceDestination = "${rootDir}/tests/sourceFiles/${projectDir.name}"
 def nativeClassesDirectory = "${buildDir}/classes"
 
 def ballerinaSourceFolder = new File("${buildDir}/ballerina-src")
-def jacocoFolder = new File("${buildDir}/jacoco/jacoco.exec")
+def jacocoExecFolder = new File("${buildDir}/jacoco/jacoco.exec")
+def testExecFolder = new File("${buildDir}/jacoco/test.exec")
 
 task collectExecFiles(type: Copy){
     from(executeDataDirectory) {
         include 'jacoco.exec'
+        include 'test.exec'
         rename { String fileName ->
         "${projectDir.name}-"+fileName
     }
@@ -332,7 +334,7 @@ task collectExecFiles(type: Copy){
 }
 
 task collectJavaSourceFiles(type: Copy){
-    if(jacocoFolder.exists()){
+    if(jacocoExecFolder.exists() || testExecFolder.exists()){
         from(nativeClassesDirectory) {
         exclude '**/test/*'
         exclude '**/module-info.class'
@@ -366,13 +368,15 @@ task collectBallerinaSourceFiles(type: Copy){
     }
 }
 
-task copyResources{
-
-}
 // task clearResources{
 //     delete "${rootDir}/tests/execs/"
 //     delete "${rootDir}/tests/sourceFiles/"
 // }
+
+task copyResources{
+
+}
+
 
 copyResources.dependsOn collectExecFiles
 copyResources.dependsOn collectJavaSourceFiles
