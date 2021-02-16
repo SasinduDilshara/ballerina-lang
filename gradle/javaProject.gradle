@@ -231,76 +231,149 @@ test.finalizedBy(jacocoMergeExec)
 //    }
 //}
 
-def nativeClassesDirectory = "${buildDir}/classes"
-def executeDataDirectory = "${buildDir}/jacoco/jacoco.exec"
-def classesDirectory = "${buildDir}/to/classes"
+// def nativeClassesDirectory = "${buildDir}/classes"
+// // def executeDataDirectory = "${buildDir}/jacoco/jacoco.exec"
+// def executeDataDirectory = "${buildDir}/jacoco/jacoco.exec/jacoco/all-test.exec"
+// def classesDirectory = "${buildDir}/to/classes"
 
-task copyJavaClassFiles(type: Copy) {
-    from(nativeClassesDirectory) {
-        exclude 'module-info.class'
-        include '**/*.class'
-    }
-    into classesDirectory
-}
+// task copyJavaClassFiles(type: Copy) {
+//     from(nativeClassesDirectory) {
+//         exclude 'module-info.class'
+//         include '**/*.class'
+//     }
+//     into classesDirectory
+// }
 
-task extractBallerinaClassFiles(type: Copy) {
-    println("start of extractBallerinaClassFiles")
+// task extractBallerinaClassFiles(type: Copy) {
+//     println("start of extractBallerinaClassFiles")
 
-    def zipFiles = fileTree("${buildDir}/ballerina-src/target").include("**/*.zip")
+//     def zipFiles = fileTree("${buildDir}/ballerina-src/target").include("**/*.zip")
 
-    zipFiles.forEach { zip ->
-        def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
-        jarFiles.forEach { jar ->
-            from zipTree(jar).matching {
-                exclude '**/tests/*'
-                exclude '**/$_init.class'
-                exclude '**/$value$Caller.class'
-                exclude '**/$value$Detail.class'
-                exclude '**/$value$DetailType.class'
-                exclude '**/$value$EmptyIterator.class'
-                exclude '**/$value$$anonType$_6.class'
-                exclude '**/$value$$anonType$_*.class'
-                exclude '**/$value$_Frame.class'
-                include '**/*.class'
-            }
-            into classesDirectory
-        }
-    }
-}
+//     zipFiles.forEach { zip ->
+//         def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
+//         jarFiles.forEach { jar ->
+//             from zipTree(jar).matching {
+//                 exclude '**/tests/*'
+//                 exclude '**/$_init.class'
+//                 exclude '**/$value$Caller.class'
+//                 exclude '**/$value$Detail.class'
+//                 exclude '**/$value$DetailType.class'
+//                 exclude '**/$value$EmptyIterator.class'
+//                 exclude '**/$value$$anonType$_6.class'
+//                 exclude '**/$value$$anonType$_*.class'
+//                 exclude '**/$value$_Frame.class'
+//                 include '**/*.class'
+//             }
+//             into classesDirectory
+//         }
+//     }
+// }
 
-task codeCoverageReport(type: JacocoReport) {
-    println("${project.rootDir.absolutePath}")
-    println("Current Directory is ${buildDir}")
-    executionData executeDataDirectory
+// task mergeExecFiles(type: JacocoMerge) {
+//     destinationFile = file("$buildDir/jacoco/all-test.exec")
+//     executionData = files(executeDataDirectory, "${rootDir}/tests/jballerina-unit-test/build/jacoco/jacoco.exec")
+// }
 
-    additionalClassDirs files("${classesDirectory}")
+// task codeCoverageReport(type: JacocoReport) {
+//     println("${project.rootDir.absolutePath}")
+//     println("Current Directory is ${buildDir}")
+//     executionData executeDataDirectory
 
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
-        html.destination = new File("${buildDir}/reports/jacoco/report.html")
-    }
+//     additionalClassDirs files("${classesDirectory}")
 
-    println("reports generated")
+//     reports {
+//         xml.enabled = true
+//         html.enabled = true
+//         xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
+//         html.destination = new File("${buildDir}/reports/jacoco/report.html")
+//     }
 
-    onlyIf = {
-        true
-    }
-}
+//     println("reports generated")
+
+//     onlyIf = {
+//         true
+//     }
+// }
 
 task cleanSourceDestination {
     delete "${buildDir}/to"
     delete "${buildDir}/reports/jacoco"
 } 
 
-codeCoverageReport.dependsOn copyJavaClassFiles
-def folder = new File("${buildDir}/ballerina-src")
-// If it doesn't exist
-if(folder.exists() && projectDir.getParentFile().getName() == "langlib") {
-    println("rootProject.projectDir: ${projectDir}")
-    println("projectDir.getParentFile().getName(): ${projectDir.getParentFile().getName()}")
-  codeCoverageReport.dependsOn extractBallerinaClassFiles
-}
+// codeCoverageReport.dependsOn copyJavaClassFiles
+// def folder = new File("${buildDir}/ballerina-src")
+// // If it exist
+// if(folder.exists() && projectDir.getParentFile().getName() == "langlib") {
+//     println("rootProject.projectDir: ${projectDir}")
+//     println("projectDir.getParentFile().getName(): ${projectDir.getParentFile().getName()}")
+//   codeCoverageReport.dependsOn extractBallerinaClassFiles
+// //   codeCoverageReport.dependsOn mergeExecFiles
+// }
 
 // codeCoverageReport.finalizedBy cleanSourceDestination
+
+def execdestination = "${rootDir}/tests/execs"
+def executeDataDirectory = "${buildDir}/jacoco/jacoco.exec"
+
+def sourceDestination = "${rootDir}/tests/sourceFiles/${projectDir.name}"
+def nativeClassesDirectory = "${buildDir}/classes"
+
+def ballerinaSourceFolder = new File("${buildDir}/ballerina-src")
+def jacocoFolder = new File("${buildDir}/jacoco/jacoco.exec")
+
+task collectExecFiles(type: Copy){
+    from(executeDataDirectory) {
+        include 'jacoco.exec'
+        rename { String fileName ->
+        "${projectDir.name}-"+fileName
+    }
+    }
+    into execdestination
+}
+
+task collectJavaSourceFiles(type: Copy){
+    if(jacocoFolder.exists()){
+        from(nativeClassesDirectory) {
+        exclude '**/test/*'
+        exclude '**/module-info.class'
+        include '**/*.class'
+    }
+        into sourceDestination
+    }
+}
+
+task collectBallerinaSourceFiles(type: Copy){
+    if(ballerinaSourceFolder.exists() && projectDir.getParentFile().getName() == "langlib") {
+        def zipFiles = fileTree("${buildDir}/ballerina-src/target").include("**/*.zip")
+        zipFiles.forEach { zip ->
+            def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
+            jarFiles.forEach { jar ->
+                from zipTree(jar).matching {
+                    exclude '**/tests/*'
+                    exclude '**/$_init.class'
+                    exclude '**/$value$Caller.class'
+                    exclude '**/$value$Detail.class'
+                    exclude '**/$value$DetailType.class'
+                    exclude '**/$value$EmptyIterator.class'
+                    exclude '**/$value$$anonType$_6.class'
+                    exclude '**/$value$$anonType$_*.class'
+                    exclude '**/$value$_Frame.class'
+                    include '**/*.class'
+                }
+                into sourceDestination
+            }
+        }
+    }
+}
+
+task copyResources{
+
+}
+// task clearResources{
+//     delete "${rootDir}/tests/execs/"
+//     delete "${rootDir}/tests/sourceFiles/"
+// }
+
+copyResources.dependsOn collectExecFiles
+copyResources.dependsOn collectJavaSourceFiles
+copyResources.dependsOn collectBallerinaSourceFiles
