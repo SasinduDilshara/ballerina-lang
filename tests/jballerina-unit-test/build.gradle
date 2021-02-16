@@ -126,3 +126,79 @@ configurations {
 configurations.all {
     resolutionStrategy.preferProjectModules()
 }
+
+// task copyJavaClassFiles(type: Copy) {
+//     file(nativeClassesDirectory).eachDir { dir ->
+//         from(fileTree(dir)) {
+//             exclude 'module-info.class'
+//             include '**/*.class'
+//         }
+//     into classesDirectory
+// }
+
+// task jacocoMergeTest(type: JacocoMerge) {
+//     println("javaBuildDir  ${javaBuildDir}")
+//     destinationFile = file("$buildDir/jballerina.java/jacoco/all-test.exec")
+//     executionData = files("${buildDir}/jacoco/test.exec", "${javaBuildDir}/jacoco/jacoco.exec")
+// }
+
+// task extractBallerinaClassFiles(type: Copy) {
+//     println("start of extractBallerinaClassFiles")
+
+//     def zipFiles = fileTree("${javaBuildDir}/ballerina-src/target").include("**/*.zip")
+
+//     zipFiles.forEach { zip ->
+//         def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
+//         jarFiles.forEach { jar ->
+//             from zipTree(jar).matching {
+//                 exclude '**/tests/*'
+//                 exclude '**/$_init.class'
+//                 exclude '**/$value$Caller.class'
+//                 exclude '**/$value$Detail.class'
+//                 exclude '**/$value$DetailType.class'
+//                 exclude '**/$value$EmptyIterator.class'
+//                 exclude '**/$value$$anonType$_6.class'
+//                 exclude '**/$value$$anonType$_*.class'
+//                 exclude '**/$value$_Frame.class'
+//                 include '**/*.class'
+//             }
+//             into classesDirectory
+//         }
+//     }
+// }
+
+// def nativeClassesDirectory = "${rootDir}/langlib/jballerina.java/build/classes"
+def execFilesDir = "${rootDir}/tests/execs"
+// def nativeClassesDirectory = "${testBuildDir}/javaClassFiles"
+def classesDirectory = "${rootDir}/tests/sourceFiles"
+// def javaBuildDir = "${rootDir}/langlib/jballerina.java/build"
+def destinationExec = "${buildDir}/jacoco/all-test.exec"
+
+task jacocoMergeTest(type: JacocoMerge) {
+    destinationFile = file("${buildDir}/jacoco/all-test.exec")
+    executionData = files("${buildDir}/jacoco/test.exec", "${execFilesDir}")
+}
+
+task codeCoverageReport(type: JacocoReport) {
+
+    executionData destinationExec
+    additionalClassDirs files("${classesDirectory}")
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
+        html.destination = new File("${buildDir}/reports/jacoco/report.html")
+    }
+
+    println("reports generated")
+
+    onlyIf = {
+        true
+    }
+
+}
+
+// codeCoverageReport.dependsOn copyJavaClassFiles
+// codeCoverageReport.dependsOn extractBallerinaClassFiles 
+codeCoverageReport.dependsOn jacocoMergeTest
