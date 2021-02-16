@@ -176,7 +176,8 @@ def destinationExec = "${buildDir}/jacoco/all-test.exec"
 
 task jacocoMergeTest(type: JacocoMerge) {
     destinationFile = file("${buildDir}/jacoco/all-test.exec")
-    executionData = files("${buildDir}/jacoco/test.exec", "${execFilesDir}")
+    executionData = fileTree("${execFilesDir}")
+    // executionData = files("${buildDir}/jacoco/test.exec", "${execFilesDir}")
 }
 
 task codeCoverageReport(type: JacocoReport) {
