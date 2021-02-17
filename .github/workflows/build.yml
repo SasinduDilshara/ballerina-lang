@@ -31,7 +31,8 @@ jobs:
         run: |
           export DISPLAY=':99.0'
           /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-          ./gradlew clean build
+          ./gradlew clean build --max-workers=2 --scan --no-daemon
+          ./gradlew test
           ./gradlew copyResources
           ./gradlew :jballerina-unit-test:codeCoverageReport --stacktrace
           find ~/.gradle/caches/ -name "*.lock" -type f -delete
