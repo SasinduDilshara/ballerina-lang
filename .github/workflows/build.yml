@@ -5,7 +5,7 @@ on:
 
 jobs:
   ubuntu_build:
-    name: Build without tests on Ubuntu
+    name: Generate codecov
     runs-on: ubuntu-latest
     timeout-minutes: 75
 
