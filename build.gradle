@@ -6,6 +6,16 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id 'maven-publish'
     id 'net.researchgate.release' version '2.6.0'
+    id 'jacoco'
+}
+
+
+repositories {
+    mavenLocal()
+
+    maven {
+        url = 'https://maven.wso2.org/nexus/content/groups/wso2-public/'
+    }
 }
 
 allprojects {
@@ -71,3 +81,31 @@ dependencies {
         //implementation 'org.springframework:spring-web:5.0.2.RELEASE'
     }
 }
+
+def execFilesDir = "${rootDir}/.jacoco/execs"
+def classesDirectory = "${rootDir}/.jacoco/sourceFiles"
+def destinationExec = "${rootDir}/.jacoco/all-test.exec"
+
+task jacocoMergeTest(type: JacocoMerge) {
+    destinationFile = file("${rootDir}/.jacoco/all-test.exec")
+    executionData = fileTree("${execFilesDir}")
+}
+
+task codeCoverageReport(type: JacocoReport) {
+
+    executionData destinationExec
+    additionalClassDirs files("${classesDirectory}")
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
+        html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
+    }
+
+    onlyIf = {
+        true
+    }
+
+}
+codeCoverageReport.dependsOn jacocoMergeTest
