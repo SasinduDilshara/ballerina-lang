@@ -50,3 +50,6 @@ gradle-app.setting
 
 # java packages
 !/compiler/ballerina-lang/src/main/java/io/ballerina/build
+
+# jacoco reports
+/.jacoco
