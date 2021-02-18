@@ -308,7 +308,8 @@ test.finalizedBy(jacocoMergeExec)
 // def balerinaClassFiles = []
 
 
-def execDesination = new File("${buildDir}/jacoco/jacoco.exec")
+// def execDesination = new File("${buildDir}/jacoco/jacoco.exec")
+def execDesination = "${buildDir}/jacoco/jacoco.exec"
 
 FileTree javaClassFilesDestination = fileTree("${buildDir}/classes").matching{
     exclude '**/test/*'
