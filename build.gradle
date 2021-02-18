@@ -82,40 +82,40 @@ dependencies {
     }
 }
 
-def execFilesDir = "${rootDir}/.jacoco/execs"
-def classesDirectory = "${rootDir}/.jacoco/sourceFiles"
-def destinationExec = "${rootDir}/.jacoco/all-test.exec"
+// def execFilesDir = "${rootDir}/.jacoco/execs"
+// def classesDirectory = "${rootDir}/.jacoco/sourceFiles"
+// def destinationExec = "${rootDir}/.jacoco/all-test.exec"
 
-task jacocoMergeTest(type: JacocoMerge) {
-    destinationFile = file("${rootDir}/.jacoco/all-test.exec")
-    executionData = fileTree("${execFilesDir}")
-}
+// task jacocoMergeTest(type: JacocoMerge) {
+//     destinationFile = file("${rootDir}/.jacoco/all-test.exec")
+//     executionData = fileTree("${execFilesDir}")
+// }
 
-task codeCoverageReport(type: JacocoReport) {
+// task codeCoverageReport(type: JacocoReport) {
 
-    executionData destinationExec
-    additionalClassDirs files("${classesDirectory}")
+//     executionData destinationExec
+//     additionalClassDirs files("${classesDirectory}")
 
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
-        html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
-    }
+//     reports {
+//         xml.enabled = true
+//         html.enabled = true
+//         xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
+//         html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
+//     }
 
-    onlyIf = {
-        true
-    }
+//     onlyIf = {
+//         true
+//     }
 
-}
-codeCoverageReport.dependsOn jacocoMergeTest
+// }
+// codeCoverageReport.dependsOn jacocoMergeTest
 
 // def sourceDirectories = files()
 // def classFilesArray = new File()
 // def executionDataArray = new File()
-def sourceDirectories = []
-def classFilesArray = []
-def executionDataArray = []
+// def sourceDirectories = []
+// def classFilesArray = []
+// def executionDataArray = []
 // def executionDataArray1 = files()
 
 // task copyJavaSrc(type:Copy){
@@ -137,47 +137,50 @@ def executionDataArray = []
 //     }
 // }
 
-task copySource{
+// task copySource{
 
-    subprojects.forEach { subproject -> 
-        def classFilesDirectory = new File("${subproject.buildDir}/to")
+//     subprojects.forEach { subproject -> 
+//         // def classFilesDirectory = new File("${subproject.buildDir}/to")
         
-        if(classFilesDirectory.exists()){
-            classFilesArray.push(classFilesDirectory)
-        }
-    }
+//         if(classFilesDirectory.exists()){
+//             classFilesArray.push(classFilesDirectory)
+//         }
+//     }
 
-}
+// }
 
-task copyExec(type: Copy){
-    subprojects.forEach { subproject -> 
-    def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
+// task copyExec(type: Copy){
+//     subprojects.forEach { subproject -> 
+//     def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
+//         if(execFile.exists()){
+//             executionDataArray.push(execFile)
+//         }
+//     }
+// }
 
-    if(execFile.exists()){
-        executionDataArray.push(execFile)
-    }
-
-}
-}
-
-task jacocoTestReport(type: JacocoReport) {
+// task jacocoTestReport(type: JacocoReport) {
 
 
-    executionData files(executionDataArray)
-    additionalClassDirs files(classFilesArray)
+//     executionData files(executionDataArray)
+//     additionalClassDirs files(classFilesArray)
 
 
-    reports {
-        html.enabled = true
-        xml.enabled = true
-        xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
-        html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
-    }
-    onlyIf = {
-        true
-    }
-}
+//     reports {
+//         html.enabled = true
+//         xml.enabled = true
+//         xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
+//         html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
+//     }
+//     onlyIf = {
+//         true
+//     }
+// }
 
-copySource.dependsOn copyExec
-jacocoTestReport.dependsOn copySource
+// copySource.dependsOn copyExec
+// jacocoTestReport.dependsOn copySource
 
+
+
+// task collecJavaClassFiles(type: Copy){
+
+// }
