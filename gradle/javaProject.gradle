@@ -420,8 +420,8 @@ task codeCoverageReport(type: JacocoReport) {
     reports {
         xml.enabled = true
         html.enabled = true
-        xml.destination = new File("${rootDir}/.jacoco/reports/xml/jacoco/${projectDir.name}-report.xml")
-        html.destination = new File("${rootDir}/.jacoco/reports/html/jacoco/${projectDir.name}-report.html")
+        xml.destination = new File("${rootDir}/.jacoco/reports/xml/${projectDir.name}-report.xml")
+        html.destination = new File("${rootDir}/.jacoco/reports/html/${projectDir.name}-report.html")
     }
 
     onlyIf = {
