@@ -109,3 +109,75 @@ task codeCoverageReport(type: JacocoReport) {
 
 }
 codeCoverageReport.dependsOn jacocoMergeTest
+
+// def sourceDirectories = files()
+// def classFilesArray = new File()
+// def executionDataArray = new File()
+def sourceDirectories = []
+def classFilesArray = []
+def executionDataArray = []
+// def executionDataArray1 = files()
+
+// task copyJavaSrc(type:Copy){
+//         subprojects.forEach { subproject -> 
+//     //     def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
+//     //     executionData.collect(execFile)
+//     // } 
+//     // classDirectories = subprojects.forEach { subproject -> 
+//         def ballerinaSource = new File("${subproject.buildDir}/ballerina-src")
+//         def javaSource = new File("${subproject.buildDir}/classes")
+//         // javaSource.each{f -> println(f)}
+        
+//         if(ballerinaSource.exists()){
+//             classFilesArray.push("${subproject.buildDir}/ballerina-src")
+//         }
+//         if(javaSource.exists()){
+//             classFilesArray.push(javaSource)    
+//         }
+//     }
+// }
+
+task copySource{
+
+    subprojects.forEach { subproject -> 
+        def classFilesDirectory = new File("${subproject.buildDir}/to")
+        
+        if(classFilesDirectory.exists()){
+            classFilesArray.push(classFilesDirectory)
+        }
+    }
+
+}
+
+task copyExec(type: Copy){
+    subprojects.forEach { subproject -> 
+    def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
+
+    if(execFile.exists()){
+        executionDataArray.push(execFile)
+    }
+
+}
+}
+
+task jacocoTestReport(type: JacocoReport) {
+
+
+    executionData files(executionDataArray)
+    additionalClassDirs files(classFilesArray)
+
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
+        html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
+    }
+    onlyIf = {
+        true
+    }
+}
+
+copySource.dependsOn copyExec
+jacocoTestReport.dependsOn copySource
+
