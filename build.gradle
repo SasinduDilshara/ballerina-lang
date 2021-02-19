@@ -9,10 +9,8 @@ plugins {
     id 'jacoco'
 }
 
-
 repositories {
     mavenLocal()
-
     maven {
         url = 'https://maven.wso2.org/nexus/content/groups/wso2-public/'
     }
@@ -82,183 +80,63 @@ dependencies {
     }
 }
 
-def execFilesDir = "${rootDir}/.jacoco/execs"
-def classesDirectory = "${rootDir}/.jacoco/sourceFiles"
-def destinationExec = "${rootDir}/.jacoco/all-test.exec"
-
-task jacocoMergeTest(type: JacocoMerge) {
-    destinationFile = file("${rootDir}/.jacoco/all-test.exec")
-    executionData = fileTree("${execFilesDir}")
-}
-
-task codeCoverageReport1(type: JacocoReport) {
-
-    executionData destinationExec
-    additionalClassDirs files("${classesDirectory}")
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
-        html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
-    }
-
-    onlyIf = {
-        true
-    }
-
-}
-codeCoverageReport1.dependsOn jacocoMergeTest
-
-// def sourceDirectories = files()
-// def classFilesArray = new File()
-// def executionDataArray = new File()
-// def sourceDirectories = []
 def classFilesArray = []
-def executionDataArray = []
-def executionDataArray1 = files()
+def execFilesArray = []
 
-// task copyJavaSrc(type:Copy){
-//         subprojects.forEach { subproject -> 
-//     //     def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
-//     //     executionData.collect(execFile)
-//     // } 
-//     // classDirectories = subprojects.forEach { subproject -> 
-//         def ballerinaSource = new File("${subproject.buildDir}/ballerina-src")
-//         def javaSource = new File("${subproject.buildDir}/classes")
-//         // javaSource.each{f -> println(f)}
-        
-//         if(ballerinaSource.exists()){
-//             classFilesArray.push("${subproject.buildDir}/ballerina-src")
-//         }
-//         if(javaSource.exists()){
-//             classFilesArray.push(javaSource)    
-//         }
-//     }
-// }
-
-task copySource{
-
-    subprojects.forEach { subproject -> 
-        def classFilesDirectory = new File("${subproject.buildDir}/to")
-        
-        if(classFilesDirectory.exists()){
-            classFilesArray.push(classFilesDirectory)
-        }
-    }
-
-}
-
-task copyExec(type: Copy){
-    subprojects.forEach { subproject -> 
-    def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
-
-    if(execFile.exists()){
-        executionDataArray.push(execFile)
-    }
-
-}
-}
-
-task jacocoTestReport(type: JacocoReport) {
-
-
-    executionData files(executionDataArray)
-    additionalClassDirs files(classFilesArray)
-
-
-    reports {
-        html.enabled = true
-        xml.enabled = true
-        xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
-        html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
-    }
-    onlyIf = {
-        true
-    }
-}
-
-copySource.dependsOn copyExec
-jacocoTestReport.dependsOn copySource
-
-def classFiles= []
-def execArray = []
-
-task copyJavaClassFiles{
+task copyJavaClassFiles {
     subprojects.forEach { subproject -> 
         def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
         if(execFile.exists()){
-            execArray.push(execFile)
+            execFilesArray.push(execFile)
             fileTree("${subproject.buildDir}/classes").matching{
                 exclude '**/test/*'
                 exclude '**/module-info.class'
                 include '**/*.class'
-            }.each{file->classFiles.push(file)}
+            }.each{file->classFilesArray .push(file)}
         }
     }
 }
 
-// def ballerinaClassFilesArray = []
-
-
-task copyBallerinaClassFiles{
+task copyBallerinaClassFiles {
     subprojects.forEach { subproject -> 
     def ballerinaSourceDirectory = new File("${subproject.buildDir}/ballerina-src")
-    println("out come here")
-    if(ballerinaSourceDirectory.exists() && subproject.projectDir.getParentFile().getName() == "langlib") {
-        println("come here")
-        fileTree("${subproject.buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
-            def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
-            println("jarFiles: ${jarFiles}")
-            jarFiles.forEach { jar ->
-                zipTree(jar).matching {
-                    exclude '**/tests/*'
-                    exclude '**/$_init.class'
-                    exclude '**/$value$Caller.class'
-                    exclude '**/$value$Detail.class'
-                    exclude '**/$value$DetailType.class'
-                    exclude '**/$value$EmptyIterator.class'
-                    exclude '**/$value$$anonType$_6.class'
-                    exclude '**/$value$$anonType$_*.class'
-                    exclude '**/$value$_Frame.class'
-                    include '**/*.class'
+        if(ballerinaSourceDirectory.exists() && subproject.projectDir.getParentFile().getName() == "langlib") {
+            fileTree("${subproject.buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
+                def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
+                jarFiles.forEach { jar ->
+                    zipTree(jar).matching {
+                        exclude '**/tests/*'
+                        exclude '**/$_init.class'
+                        exclude '**/$value$Caller.class'
+                        exclude '**/$value$Detail.class'
+                        exclude '**/$value$DetailType.class'
+                        exclude '**/$value$EmptyIterator.class'
+                        exclude '**/$value$$anonType$_6.class'
+                        exclude '**/$value$$anonType$_*.class'
+                        exclude '**/$value$_Frame.class'
+                        include '**/*.class'
+                    }
+                    .each { file->
+                    classFilesArray .push(file) }
                 }
-                .each { file->
-                println("file:${file}")
-                classFiles.push(file) }
             }
         }
     }
-    }
 }
 
-task codeCoverageReport(type: JacocoReport) {
-
-    executionData files(execArray)
-    // if(ballerinaSourceDirectory.exists() && projectDir.getParentFile().getName() == "langlib"){
-        additionalClassDirs files(classFiles)
-    // }
-    // else{
-    //     println("report for java")
-    //     if(execFileDesination.exists()){
-    //         additionalClassDirs javaClassFilesArray
-    //     }
-    // }
-
+task createCodeCoverageReport(type: JacocoReport) {
+    executionData files(execFilesArray)
+    additionalClassDirs files(classFilesArray )
     reports {
         xml.enabled = true
         html.enabled = true
         xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
         html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
     }
-
     onlyIf = {
         true
     }
-
 }
-copyBallerinaClassFiles.dependsOn copyJavaClassFiles
-codeCoverageReport.dependsOn copyBallerinaClassFiles
 
-
-
+copyBallerinaClassFiles.dependsOn copyJavaClassFiles 
+codeCoverageReport.dependsOn copyBallerinaClassFiles 
