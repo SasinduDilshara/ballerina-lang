@@ -124,7 +124,7 @@ task copyBallerinaClassFiles {
     }
 }
 
-task codeCoverageReport(type: JacocoReport) {
+task createCodeCoverageReport(type: JacocoReport) {
     executionData files(execFilesArray)
     additionalClassDirs files(classFilesArray )
     reports {
