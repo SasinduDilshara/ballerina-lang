@@ -398,7 +398,7 @@ task checkCopy(type: Copy){
         }
             into "${rootDir}/.jacoco/testSources/bal/${projectDir.name}"
     }
-
+    
         from(javaClassFilesDestination) {
             
         }
