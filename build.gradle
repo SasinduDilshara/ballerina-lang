@@ -208,9 +208,9 @@ task copyJavaClassFiles{
 task copyBallerinaClassFiles{
     subprojects.forEach { subproject -> 
     def ballerinaSourceDirectory = new File("${subproject.buildDir}/ballerina-src")
-
-    if(ballerinaSourceDirectory.exists() && projectDir.getParentFile().getName() == "langlib") {
-
+    println("out come here")
+    if(ballerinaSourceDirectory.exists() && subproject.projectDir.getParentFile().getName() == "langlib") {
+        println("come here")
         fileTree("${buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
             def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
             println("jarFiles: ${jarFiles}")
@@ -227,7 +227,9 @@ task copyBallerinaClassFiles{
                     exclude '**/$value$_Frame.class'
                     include '**/*.class'
                 }
-                .each { file->classFiles.push(file) }
+                .each { file->
+                println("file:${file}")
+                classFiles.push(file) }
             }
         }
     }
