@@ -181,10 +181,6 @@ task jacocoTestReport(type: JacocoReport) {
 copySource.dependsOn copyExec
 jacocoTestReport.dependsOn copySource
 
-
-
-// def execFileDesination = new File("${buildDir}/jacoco/jacoco.exec")
-
 def classFiles= []
 def execArray = []
 
