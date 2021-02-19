@@ -9,6 +9,13 @@ plugins {
     id 'jacoco'
 }
 
+repositories {
+    mavenLocal(
+    maven {
+        url = 'https://maven.wso2.org/nexus/content/groups/wso2-public/'
+    }
+}
+
 allprojects {
     group = project.group
     version = project.version
