@@ -328,7 +328,7 @@ task copyBal(type:Copy){
             def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
             println("jarFiles: ${jarFiles}")
             jarFiles.forEach { jar ->
-                println("jar: ${jar}")
+                // println("jar: ${jar}")
                 zipTree(jar).matching {
                     exclude '**/tests/*'
                     exclude '**/$_init.class'
@@ -409,7 +409,7 @@ task codeCoverageReport(type: JacocoReport) {
 
     executionData files(execDesination)
     if(ballerinaSourceDirectory.exists() && projectDir.getParentFile().getName() == "langlib"){
-        println("report for ballerina: balsrc: ${ballerinaClassFilesDestination}")
+        // println("report for ballerina: balsrc: ${ballerinaClassFilesDestination}")
         additionalClassDirs files([javaClassFilesDestination, ballerinaClassFilesDestination])
     }
     else{
@@ -420,8 +420,8 @@ task codeCoverageReport(type: JacocoReport) {
     reports {
         xml.enabled = true
         html.enabled = true
-        xml.destination = new File("${buildDir}/reports/jacocor/index.xml")
-        html.destination = new File("${buildDir}/reports/jacocor/index.html")
+        xml.destination = new File("${buildDir}/reports/jacoco/index.xml")
+        html.destination = new File("${buildDir}/reports/jacoco/index.html")
     }
 
     onlyIf = {
