@@ -1,7 +1,7 @@
-codecov:
-  ci:
-    - travis
-    - !appveyor # ignore CI builds by AppVeyor
+# codecov:
+#   ci:
+#     - travis
+#     - !appveyor # ignore CI builds by AppVeyor
 
 
 ignore:
