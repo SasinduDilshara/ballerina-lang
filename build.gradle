@@ -130,6 +130,6 @@ task codeCoverageReport(type: JacocoReport) {
     }
 }
 
-copyBallerinaClassFiles .dependsOn copyJavaClassFiles 
+copyBallerinaClassFiles.dependsOn copyJavaClassFiles 
 codeCoverageReport.dependsOn copyBallerinaClassFiles 
 
