@@ -420,8 +420,8 @@ task codeCoverageReport(type: JacocoReport) {
     reports {
         xml.enabled = true
         html.enabled = true
-        xml.destination = new File("${rootDir}/.jacoco/reports/xml/${projectDir.name}-report.xml")
-        html.destination = new File("${rootDir}/.jacoco/reports/html/${projectDir.name}-report.html")
+        xml.destination = new File("${buildDir}/reports/jacocor/index.xml")
+        html.destination = new File("${buildDir}/reports/jacocor/index.html")
     }
 
     onlyIf = {
@@ -429,6 +429,12 @@ task codeCoverageReport(type: JacocoReport) {
     }
 
 }
+
+// task cleantask{
+//     delete "${buildDir}/reports/jacocor"
+//     delete "${buildDir}/to"
+//     delete "${buildDir}/reports/jacoco"
+// }
 
 task testBuild{
 
