@@ -6,6 +6,14 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id 'maven-publish'
     id 'net.researchgate.release' version '2.6.0'
+    id 'jacoco'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://maven.wso2.org/nexus/content/groups/wso2-public/'
+    }
 }
 
 allprojects {
@@ -130,6 +138,5 @@ task codeCoverageReport(type: JacocoReport) {
     }
 }
 
-copyBallerinaClassFiles .dependsOn copyJavaClassFiles 
+copyBallerinaClassFiles.dependsOn copyJavaClassFiles 
 codeCoverageReport.dependsOn copyBallerinaClassFiles 
-
