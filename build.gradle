@@ -92,34 +92,31 @@ task copyJavaClassFiles {
 task copyBallerinaClassFiles {
     subprojects.forEach { subproject -> 
     def ballerinaSourceDirectory = new File("${subproject.buildDir}/ballerina-src")
-
-    if(ballerinaSourceDirectory.exists() && projectDir.getParentFile().getName() == "langlib") {
-
-        fileTree("${buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
-            def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
-            println("jarFiles: ${jarFiles}")
-            jarFiles.forEach { jar ->
-                zipTree(jar).matching {
-                    exclude '**/tests/*'
-                    exclude '**/$_init.class'
-                    exclude '**/$value$Caller.class'
-                    exclude '**/$value$Detail.class'
-                    exclude '**/$value$DetailType.class'
-                    exclude '**/$value$EmptyIterator.class'
-                    exclude '**/$value$$anonType$_6.class'
-                    exclude '**/$value$$anonType$_*.class'
-                    exclude '**/$value$_Frame.class'
-                    include '**/*.class'
+        if(ballerinaSourceDirectory.exists() && subproject.projectDir.getParentFile().getName() == "langlib") {
+            fileTree("${subproject.buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
+                def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
+                jarFiles.forEach { jar ->
+                    zipTree(jar).matching {
+                        exclude '**/tests/*'
+                        exclude '**/$_init.class'
+                        exclude '**/$value$Caller.class'
+                        exclude '**/$value$Detail.class'
+                        exclude '**/$value$DetailType.class'
+                        exclude '**/$value$EmptyIterator.class'
+                        exclude '**/$value$$anonType$_6.class'
+                        exclude '**/$value$$anonType$_*.class'
+                        exclude '**/$value$_Frame.class'
+                        include '**/*.class'
+                    }
+                    .each { file->
+                    classFilesArray .push(file) }
                 }
-                .each { file->classFilesArray .push(file) }
             }
         }
-    }
     }
 }
 
 task codeCoverageReport(type: JacocoReport) {
-
     executionData files(execFilesArray)
     additionalClassDirs files(classFilesArray )
     reports {
@@ -128,11 +125,11 @@ task codeCoverageReport(type: JacocoReport) {
         xml.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.xml")
         html.destination = new File("${rootDir}/.jacoco/reports/jacoco/report.html")
     }
-
     onlyIf = {
         true
     }
-
 }
-copyBallerinaClassFiles.dependsOn copyJavaClassFiles 
+
+copyBallerinaClassFiles .dependsOn copyJavaClassFiles 
 codeCoverageReport.dependsOn copyBallerinaClassFiles 
+
