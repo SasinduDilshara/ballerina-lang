@@ -211,7 +211,7 @@ task copyBallerinaClassFiles{
     println("out come here")
     if(ballerinaSourceDirectory.exists() && subproject.projectDir.getParentFile().getName() == "langlib") {
         println("come here")
-        fileTree("${buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
+        fileTree("${subproject.buildDir}/ballerina-src/target").include("**/*.zip").forEach { zip ->
             def jarFiles = zipTree(zip).matching { include '**/*.jar' } 
             println("jarFiles: ${jarFiles}")
             jarFiles.forEach { jar ->
