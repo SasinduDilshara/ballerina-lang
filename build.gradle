@@ -1,3 +1,5 @@
+apply from: "$rootDir/gradle/repositories.gradle"
+
 plugins {
     id 'base'
     id 'com.gradle.build-scan' version '2.1'
@@ -140,3 +142,4 @@ task createCodeCoverageReport(type: JacocoReport) {
 
 copyBallerinaClassFiles.dependsOn copyJavaClassFiles 
 createCodeCoverageReport.dependsOn copyBallerinaClassFiles 
+
