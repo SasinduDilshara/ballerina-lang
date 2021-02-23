@@ -31,8 +31,7 @@ jobs:
             -   name: Generate Codecov Report
                 uses: codecov/codecov-action@v1
                 with:
-                    files: ./.jacoco/reports/jacoco/report.xml 
-                
+                    files: ./.jacoco/reports/jacoco/report.xml                 
 
             -   name: Trigger Standard Library Module Builds
                 run: |
