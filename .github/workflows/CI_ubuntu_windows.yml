@@ -55,7 +55,7 @@ jobs:
       - name: Generate Codecov Report
         uses: codecov/codecov-action@v1
         with:
-            files: ./.jacoco/reports/jacoco/reports.xml # xml file
+            files: ./.jacoco/reports/jacoco/report.xml # xml file
 
   windows_build:
     name: Build without tests on Windows
