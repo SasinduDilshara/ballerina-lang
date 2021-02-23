@@ -45,3 +45,4 @@ jobs:
                     --data-raw '{
                         "event_type": "ballerina-lang-push"
                     }'
+
