@@ -2,23 +2,6 @@ name: CI Ubuntu/Windows
 
 on:
   push:
-    paths-ignore:
-      - 'stdlib/release/**'
-    branches-ignore:
-      - master
-      - next-release
-      - release-stage
-      - stage
-      - ballerina-1.2.x
-  pull_request:
-    paths-ignore:
-      - 'stdlib/release/**'
-    branches-ignore:
-      - master
-      - next-release
-      - release-stage
-      - stage
-      - ballerina-1.2.x
 
 jobs:
   ubuntu_build:
@@ -49,8 +32,14 @@ jobs:
           export DISPLAY=':99.0'
           /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           ./gradlew build --max-workers=2 --scan
+          ./gradlew clean build createCodeCoverageReport -x createJavadoc --scan publish --continue --rerun-tasks
 
           find ~/.gradle/caches/ -name "*.lock" -type f -delete
+                    
+      - name: Generate Codecov Report
+        uses: codecov/codecov-action@v1
+        with:
+            files: ./.jacoco/reports/jacoco/report.xml  
 
   windows_build:
     name: Build without tests on Windows
