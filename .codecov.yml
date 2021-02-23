@@ -1,2 +1,5 @@
+ignore:
+  - "project-api/project-api-test/build/reports/jacoco/test/jacocoTestReport.xml"  # ignore unwanted xml files
+
 fixes:
   - "ballerina/lang$0046*/*/::langlib/lang.*/src/main/ballerina/"
