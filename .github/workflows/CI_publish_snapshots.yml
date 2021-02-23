@@ -3,7 +3,6 @@ name: Build and Publish Snapshot Artifacts
 on:
     push:
     workflow_dispatch:
-
 jobs:
     publish-ballerina-lang:
         name: Build and Publish Ballerina Lang
