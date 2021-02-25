@@ -77,18 +77,8 @@ dependencies {
 
 def classFilesArray = []
 def execFilesArray = []
-// evaluationDependsOnChildren()
-// project.evaluationDependsOnChildren();
 task copyExecFilesAndJavaClassFiles {
     println("start copyExecFilesAndJavaClassFiles")
-    // dependsOn(subprojects*.build)
-    // dependsOn subprojects*.build
-    // dependsOn(subprojects.build)
-    // subprojects.findAll { it.tasks.findByName('build')}
-    //            .each { subproject ->
-    //                println("subproject -> ${subproject}")
-    //                dependsOn("${subproject.name}:test") }
-
     subprojects.forEach { subproject -> 
         def execFile = new File("${subproject.buildDir}/jacoco/jacoco.exec")
         if (execFile.exists()) {
@@ -147,146 +137,7 @@ task createCodeCoverageReport(type: JacocoReport) {
 
     println("end createcodecoveragereport")
 }
-// subprojects*.each { subproject ->
-//                 //    println("subproject -> ${subproject}")
-//                 //    println("projname ${subproject.projectDir.name}")
-//                    if(subproject.hasProperty('build')) {
-//                         println("subproject -> ${subproject}")
-//                         println("projname ${subproject.projectDir.name}")
-//                         copyExecFilesAndJavaClassFiles.dependsOn("${subproject.projectDir.name}:test") }
-//                    }
-// subprojects.findAll { it.tasks.findByName('build')}
-//                .each { subproject ->
 
-//                 //    println("subproject -> ${subproject}")
-//                    copyExecFilesAndJavaClassFiles.dependsOn("${subproject.name}:test") 
-// subprojects.findAll().each{ subproject-> println( subproject.build ) }
-// // copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:test'
-// // copyExecFilesAndJavaClassFiles.dependsOn subprojects.build
-// // copyExecFilesAndJavaClassFiles.dependsOn build
-// // copyExecFilesAndJavaClassFiles.dependsOn subprojects.test
-// // copyExecFilesAndJavaClassFiles.dependsOn subprojects*.build
-
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-tools-api:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-parser:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-compiler-api-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':project-api-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:internal:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:annotations:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:jballerina.java:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:array:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:config:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:decimal:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:error:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:floatingpoint:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:future:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:integer:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:map:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:object:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:stream:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:table:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:query:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:transaction:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:string:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:typedesc:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:value:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:xml:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:bool:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang:runtime:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-lang-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-langlib:test:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':stdlib:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-io:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-observability:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-observability-internal:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-test-common:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':lib-creator:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-config:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-core:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-runtime:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-rt:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-runtime-api:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-test-utils:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-treegen:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-logging:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-bindgen:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':maven-resolver:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':jballerina-unit-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':jballerina-benchmark-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-compiler-plugin-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':diagram-util:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-stdlib:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-commons:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-core:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-stdio-launcher:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-cli:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-launchers:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':language-server:language-server-test-coverage:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':language-server:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-shell:shell-rt:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-shell:shell-core:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-shell:shell-cli:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-shell:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':docerina-gradle-plugin:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':docerina:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-formatter:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerinalang-data-mapper:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':testerina:testerina-core:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':testerina:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':testerina:report-tools:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':testerina:testerina-runtime:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':testerina:testerina-core:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-spec-conformance-tests:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':observability-symbol-collector:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':metrics-extensions:ballerina-metrics-extension:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':metrics-extensions:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':toml-parser:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':composer-library:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-stringutils:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':ballerina:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':jballerina:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':jballerina-tools:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':nballerina-tools:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':observability-test-utils:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':test-launch-listener-01:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':test-launch-listener-02:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':test-launch-listener-03:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':test-launch-listener-04:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':jballerina-integration-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-cli-module:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':central-client:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':ballerina-cli:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':testerina:testerina-runtime:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':testerina:report-tools:test'
-//Comment
-// copyExecFilesAndJavaClassFiles.dependsOn ':testerina-integration-test:test'
-// copyExecFilesAndJavaClassFiles.dependsOn ':jballerina-debugger-integration-test:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':benchmarks:test'
-
-// copyExecFilesAndJavaClassFiles.dependsOn ':test-config:checkstyle:test'
-
-copyExecFilesAndJavaClassFiles.dependsOn ':debug-adapter:debug-adapter-core:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':debug-adapter:debug-adapter-cli:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':debug-adapter:debug-adapter-runtime:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':formatter:formatter-core:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':formatter:formatter-cli:test'
-copyExecFilesAndJavaClassFiles.dependsOn ':bir-spec:test'
 
 copyBallerinaClassFiles.dependsOn copyExecFilesAndJavaClassFiles 
 createCodeCoverageReport.dependsOn copyBallerinaClassFiles 
