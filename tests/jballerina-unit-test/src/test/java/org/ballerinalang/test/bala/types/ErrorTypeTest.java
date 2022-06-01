@@ -112,6 +112,18 @@ public class ErrorTypeTest {
         BAssertUtil.validateError(negativeResult, i++,
                 "incompatible types: expected 'testorg/errors:1.0.0:NewPostDefinedError', " +
                         "found 'testorg/errors:1.0.0:PostDefinedError'", 28, 32);
+        BAssertUtil.validateError(negativeResult, i++, "attempt to refer to non-accessible symbol 'E5'", 33, 22);
+        BAssertUtil.validateError(negativeResult, i++, "undefined error type descriptor 'E5'", 33, 22);
+        BAssertUtil.validateError(negativeResult, i++, "attempt to refer to non-accessible symbol 'E6'", 34, 22);
+        BAssertUtil.validateError(negativeResult, i++, "undefined error type descriptor 'E6'", 34, 22);
+        BAssertUtil.validateError(negativeResult, i++, "attempt to refer to non-accessible symbol 'E7'", 35, 22);
+        BAssertUtil.validateError(negativeResult, i++, "undefined error type descriptor 'E7'", 35, 22);
+        BAssertUtil.validateError(negativeResult, i++, "attempt to refer to non-accessible symbol 'E8'", 36, 22);
+        BAssertUtil.validateError(negativeResult, i++, "undefined error type descriptor 'E8'", 36, 22);
+        BAssertUtil.validateError(negativeResult, i++, "attempt to refer to non-accessible symbol 'E9'", 37, 22);
+        BAssertUtil.validateError(negativeResult, i++, "undefined error type descriptor 'E9'", 37, 22);
+        BAssertUtil.validateError(negativeResult, i++, "attempt to refer to non-accessible symbol 'E10'", 38, 22);
+        BAssertUtil.validateError(negativeResult, i++, "undefined error type descriptor 'E10'", 38, 22);
         Assert.assertEquals(negativeResult.getErrorCount(), i);
     }
 
