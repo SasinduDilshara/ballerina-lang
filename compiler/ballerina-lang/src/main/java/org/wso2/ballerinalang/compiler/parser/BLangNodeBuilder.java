@@ -957,6 +957,14 @@ public class BLangNodeBuilder extends NodeTransformer<BLangNode> {
         return createUserDefinedType(pos, (BLangIdentifier) TreeBuilder.createIdentifierNode(), bLTypeDef.name);
     }
 
+    private BLangUserDefinedType deSugarTypeAsUserDefType1(BLangType toIndirect) {
+        BLangTypeDefinition bLTypeDef = createTypeDefinitionWithTypeNode1(toIndirect);
+        Location pos = toIndirect.pos;
+        addToTop(bLTypeDef);
+
+        return createUserDefinedType(pos, (BLangIdentifier) TreeBuilder.createIdentifierNode(), bLTypeDef.name);
+    }
+
     private BLangTypeDefinition createTypeDefinitionWithTypeNode(BLangType toIndirect) {
         Location pos = toIndirect.pos;
         BLangTypeDefinition bLTypeDef = (BLangTypeDefinition) TreeBuilder.createTypeDefinition();
@@ -967,11 +975,28 @@ public class BLangNodeBuilder extends NodeTransformer<BLangNode> {
         bLTypeDef.setName(anonTypeGenName);
         bLTypeDef.flagSet.add(Flag.PUBLIC);
         bLTypeDef.flagSet.add(Flag.ANONYMOUS);
-
         bLTypeDef.typeNode = toIndirect;
         bLTypeDef.pos = pos;
         return bLTypeDef;
     }
+
+    private BLangTypeDefinition createTypeDefinitionWithTypeNode1(BLangType toIndirect) {
+        Location pos = toIndirect.pos;
+        BLangTypeDefinition bLTypeDef = (BLangTypeDefinition) TreeBuilder.createTypeDefinition();
+
+        // Generate a name for the anonymous object
+        String genName = anonymousModelHelper.getNextAnonymousTypeKey(packageID);
+        IdentifierNode anonTypeGenName = createIdentifier(symTable.builtinPos, genName);
+        bLTypeDef.setName(anonTypeGenName);
+        bLTypeDef.flagSet.add(Flag.PUBLIC);
+        bLTypeDef.flagSet.add(Flag.ANONYMOUS);
+//        bLTypeDef.flagSet.add(Flag.DISTINCT);
+        toIndirect.flagSet.add(Flag.DISTINCT);
+        bLTypeDef.typeNode = toIndirect;
+        bLTypeDef.pos = pos;
+        return bLTypeDef;
+    }
+
 
     @Override
     public BLangNode transform(ParenthesisedTypeDescriptorNode parenthesisedTypeDescriptorNode) {
@@ -1151,7 +1176,7 @@ public class BLangNodeBuilder extends NodeTransformer<BLangNode> {
             return objectTypeNode;
         }
 
-        return deSugarTypeAsUserDefType(objectTypeNode);
+        return deSugarTypeAsUserDefType1(objectTypeNode);
     }
 
     public BLangClassDefinition transformObjectCtorExpressionBody(NodeList<Node> members) {
@@ -6066,7 +6091,7 @@ public class BLangNodeBuilder extends NodeTransformer<BLangNode> {
 
     private boolean checkIfAnonymous(Node node) {
         SyntaxKind parentKind = node.parent().kind();
-        return parentKind != SyntaxKind.DISTINCT_TYPE_DESC && parentKind != SyntaxKind.TYPE_DEFINITION;
+        return parentKind != SyntaxKind.TYPE_DEFINITION;
     }
 
     private boolean ifInLocalContext(Node parent) {
