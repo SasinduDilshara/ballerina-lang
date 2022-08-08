@@ -36,6 +36,7 @@ public class QueryNegativeTests {
     @Test
     public void testFromClauseWithInvalidType() {
         CompileResult compileResult = BCompileUtil.compile("test-src/query/query-negative.bal");
+        Assert.assertEquals(compileResult.getErrorCount(), 46);
         int index = 0;
 
         validateError(compileResult, index++, "incompatible types: expected 'Person', found 'Teacher'",
@@ -102,11 +103,6 @@ public class QueryNegativeTests {
         validateError(compileResult, index++, "field name 'id' used in key specifier is not found in table " +
                 "constraint type 'record {| User user; |}'", 518, 29);
         validateError(compileResult, index++, "incompatible types: expected 'error?', found '(error|int)'", 520, 47);
-        Assert.assertEquals(compileResult.getErrorCount(), index);
-        validateWarning(compileResult, index++, "invalid usage of the 'check' expression operator:" +
-                " no expression type is equivalent to error type", 526, 15);
-        validateWarning(compileResult, index++, "invalid usage of the 'check' expression operator:" +
-                " no expression type is equivalent to error type", 535, 15);
     }
 
     @Test

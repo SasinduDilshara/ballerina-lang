@@ -91,7 +91,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -289,7 +288,7 @@ public abstract class AbstractCompletionProvider<T extends Node> implements Ball
         if (nodeAtCursor.kind() != SyntaxKind.SIMPLE_NAME_REFERENCE) {
             return completionItems;
         }
-        String prefix = ((SimpleNameReferenceNode) nodeAtCursor).name().text().toLowerCase((Locale.ENGLISH));
+        String prefix = ((SimpleNameReferenceNode) nodeAtCursor).name().text();
         context.currentDocImportsMap().forEach((importDeclarationNode, moduleSymbol) -> {
             List<Symbol> symbols = moduleSymbol.allSymbols();
             CodeActionModuleId moduleId = CodeActionModuleId.from(importDeclarationNode);

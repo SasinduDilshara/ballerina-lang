@@ -42,7 +42,7 @@ public class Generators {
         // Get skipped generators
         String property = System.getProperty(PROP_SKIPPED_GENERATORS, "");
         Set<Type> skippedGenerators = Stream.of(property.split(","))
-                .filter(type -> !type.isBlank())
+                .map(String::trim)
                 .map(Type::valueOf)
                 .collect(Collectors.toSet());
         logger.info("Skipping generators of type: " + skippedGenerators);

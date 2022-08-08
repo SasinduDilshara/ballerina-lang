@@ -194,13 +194,10 @@ public class PackageCompilation {
         // add dependency manifest diagnostics
         diagnostics.addAll(packageContext().dependencyManifest().diagnostics().allDiagnostics);
         // add compilation diagnostics
-        if (!packageResolution.diagnosticResult().hasErrors()) {
-            for (ModuleContext moduleContext : packageResolution.topologicallySortedModuleList()) {
-                moduleContext.compile(compilerContext);
-                for (Diagnostic diagnostic : moduleContext.diagnostics()) {
-                    diagnostics.add(new PackageDiagnostic(diagnostic, moduleContext.descriptor(),
-                            moduleContext.project()));
-                }
+        for (ModuleContext moduleContext : packageResolution.topologicallySortedModuleList()) {
+            moduleContext.compile(compilerContext);
+            for (Diagnostic diagnostic : moduleContext.diagnostics()) {
+                diagnostics.add(new PackageDiagnostic(diagnostic, moduleContext.descriptor(), moduleContext.project()));
             }
         }
         // add plugin diagnostics

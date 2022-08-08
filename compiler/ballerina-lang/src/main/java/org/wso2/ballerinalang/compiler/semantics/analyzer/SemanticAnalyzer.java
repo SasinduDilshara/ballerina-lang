@@ -3076,7 +3076,7 @@ public class SemanticAnalyzer extends SimpleBLangNodeAnalyzer<SemanticAnalyzer.A
             if (patternRestType != null) {
                 return new BArrayType(patternRestType);
             } else {
-                return new BArrayType(symTable.neverType);
+                return new BArrayType(symTable.anyOrErrorType);
             }
         }
     }

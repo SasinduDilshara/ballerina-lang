@@ -9112,7 +9112,8 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
                 return checkTupleFieldType(tuple, getConstIndex(indexExpr).intValue());
             }
 
-            LinkedHashSet<BType> tupleTypes = collectTupleFieldTypes(tuple, new LinkedHashSet<>());
+            BTupleType tupleExpr = (BTupleType) accessExpr.expr.getBType();
+            LinkedHashSet<BType> tupleTypes = collectTupleFieldTypes(tupleExpr, new LinkedHashSet<>());
             return tupleTypes.size() == 1 ? tupleTypes.iterator().next() : BUnionType.create(null, tupleTypes);
         }
 
@@ -9188,10 +9189,6 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
                         memberTypes.add(memberType);
                     }
                 });
-        BType tupleRestType = tupleType.restType;
-        if (tupleRestType != null) {
-            memberTypes.add(tupleRestType);
-        }
         return memberTypes;
     }
 
