@@ -206,7 +206,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.BinaryOperator;
@@ -1469,13 +1468,17 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
             for (String fieldName : keySpecifierFieldNames) {
                 BField field = types.getTableConstraintField(constraint, fieldName);
                 BLangExpression recordKeyValueField = getRecordKeyValueField(recordLiteral, fieldName);
-                if (!(Symbols.isFlagOn(field.symbol.flags, Flags.OPTIONAL)
-                        || Symbols.isFlagOn(field.symbol.flags, Flags.REQUIRED))
-                        || (recordKeyValueField != null && isConstExpression(recordKeyValueField))) {
+                if (recordKeyValueField != null && isConstExpression(recordKeyValueField)) {
                     continue;
                 }
-                dlog.error(recordLiteral.pos,
-                        DiagnosticErrorCode.KEY_SPECIFIER_FIELD_VALUE_MUST_BE_CONSTANT_EXPR, fieldName);
+                if (recordKeyValueField == null && !(Symbols.isFlagOn(field.symbol.flags, Flags.OPTIONAL)
+                        || Symbols.isFlagOn(field.symbol.flags, Flags.REQUIRED))) {
+                    dlog.error(recordLiteral.pos,
+                            DiagnosticErrorCode.UNSUPPORTED_DUPLICATE_DEFAULT_VALUES_FOR_KEY_FIELD_IN_TABLE_LITERAL);
+                } else {
+                    dlog.error(recordLiteral.pos,
+                            DiagnosticErrorCode.KEY_SPECIFIER_FIELD_VALUE_MUST_BE_CONSTANT_EXPR, fieldName);
+                }
                 data.resultType = symTable.semanticError;
             }
         }
@@ -2843,16 +2846,11 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
         if (pkgSymbol == symTable.notFoundSymbol) {
             varRefExpr.symbol = symTable.notFoundSymbol;
             dlog.error(varRefExpr.pos, DiagnosticErrorCode.UNDEFINED_MODULE, varRefExpr.pkgAlias);
-        } else if (Names.CLIENT.equals(varName) &&
-                !identifier.isLiteral) {
-            PackageID sourcePkg = data.env.enclPkg.packageID;
-            String sourceDoc = varRefExpr.pos.lineRange().filePath();
-            if (!symTable.clientDeclarations.containsKey(sourcePkg) ||
-                    !symTable.clientDeclarations.get(sourcePkg).containsKey(sourceDoc) ||
-                    !symTable.clientDeclarations.get(sourcePkg).get(sourceDoc)
-                            .containsValue(Optional.of(pkgSymbol.pkgID))) {
-                dlog.error(identifier.pos,
-                        DiagnosticErrorCode.INVALID_USAGE_OF_THE_CLIENT_KEYWORD_AS_UNQUOTED_IDENTIFIER);
+        } else if (Names.CLIENT.equals(varName) && !identifier.isLiteral) {
+            if (pkgSymbol != symTable.notFoundSymbol &&
+                    !symResolver.isModuleGeneratedForClientDeclaration(data.env.enclPkg.packageID, pkgSymbol.pkgID)) {
+                dlog.error(varRefExpr.pos,
+                           DiagnosticErrorCode.INVALID_USAGE_OF_THE_CLIENT_KEYWORD_AS_UNQUOTED_IDENTIFIER);
             }
         }
 
