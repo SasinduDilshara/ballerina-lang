@@ -40,6 +40,7 @@ import org.ballerinalang.langserver.completions.util.Snippet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -152,10 +153,10 @@ public class AnnotationDeclarationNodeContext extends AbstractCompletionProvider
                 itemSnippets.addAll(Arrays.asList(Snippet.KW_FUNCTION, Snippet.KW_FIELD));
                 break;
             case RECORD:
-                itemSnippets.add(Snippet.KW_FIELD);
+                itemSnippets.addAll(Collections.singletonList(Snippet.KW_FIELD));
                 break;
             case REMOTE:
-                itemSnippets.add(Snippet.KW_FUNCTION);
+                itemSnippets.addAll(Collections.singletonList(Snippet.KW_FUNCTION));
                 break;
             case SERVICE:
                 itemSnippets.addAll(Arrays.asList(Snippet.KW_REMOTE, Snippet.KW_REMOTE_FUNCTION));
@@ -174,8 +175,7 @@ public class AnnotationDeclarationNodeContext extends AbstractCompletionProvider
                 Snippet.KW_OBJ_FUNCTION, Snippet.KW_SERVICE_REMOTE_FUNCTION, Snippet.KW_PARAMETER,
                 Snippet.KW_RETURN, Snippet.KW_SERVICE, Snippet.KW_OBJECT, Snippet.KW_RECORD, Snippet.KW_OBJECT_FIELD,
                 Snippet.KW_RECORD_FIELD, Snippet.KW_FIELD, Snippet.KW_SOURCE_ANNOTATION, Snippet.KW_SOURCE_EXTERNAL,
-                Snippet.KW_SOURCE_VAR, Snippet.KW_SOURCE_CONST, Snippet.KW_SOURCE_LISTENER, Snippet.KW_SOURCE_WORKER,
-                Snippet.KW_SOURCE_CLIENT);
+                Snippet.KW_SOURCE_VAR, Snippet.KW_SOURCE_CONST, Snippet.KW_SOURCE_LISTENER, Snippet.KW_SOURCE_WORKER);
     }
 
     private List<Snippet> dualAttachmentPoints() {
@@ -186,7 +186,7 @@ public class AnnotationDeclarationNodeContext extends AbstractCompletionProvider
 
     private List<Snippet> sourceOnlyAttachmentPoints() {
         return Arrays.asList(Snippet.KW_ANNOTATION, Snippet.KW_EXTERNAL, Snippet.KW_VAR,
-                Snippet.KW_CONST, Snippet.KW_LISTENER, Snippet.KW_WORKER, Snippet.KW_CLIENT);
+                Snippet.KW_CONST, Snippet.KW_LISTENER, Snippet.KW_WORKER);
     }
 
     private AttachmentPointContext getAttachmentPointContext(BallerinaCompletionContext context,

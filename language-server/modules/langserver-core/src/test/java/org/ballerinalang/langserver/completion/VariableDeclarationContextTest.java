@@ -20,8 +20,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Tests for {@link org.ballerinalang.langserver.completions.providers.context.VariableDeclarationNodeContext}
@@ -39,11 +37,6 @@ public class VariableDeclarationContextTest extends CompletionTest {
     @Override
     public Object[][] dataProvider() {
         return this.getConfigsList();
-    }
-
-    @Override
-    public List<String> skipList() {
-        return Collections.singletonList("var_def_ctx_config16.json");
     }
 
     @Override

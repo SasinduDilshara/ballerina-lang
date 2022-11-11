@@ -22,8 +22,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Module Variable Declaration Context tests.
@@ -42,11 +40,6 @@ public class ModuleVariableContextTest extends CompletionTest {
     @Override
     public Object[][] dataProvider() {
         return this.getConfigsList();
-    }
-
-    @Override
-    public List<String> skipList() {
-        return Collections.singletonList("config10.json");
     }
 
     @Override

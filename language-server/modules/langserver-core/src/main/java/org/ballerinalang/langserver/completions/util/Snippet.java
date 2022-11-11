@@ -106,8 +106,6 @@ public enum Snippet {
 
 //    DEF_SERVICE_VAR(SnippetGenerator.getServiceVarSnippet()),
 
-    DEF_CLIENT_DECLARATION(SnippetGenerator.getClientDeclarationSnippet()),
-
     DEF_CLASS(SnippetGenerator.getClassDefSnippet()),
 
     DEF_ENUM(SnippetGenerator.getEnumDefSnippet()),
@@ -290,8 +288,6 @@ public enum Snippet {
     KW_SOURCE_LISTENER(SnippetGenerator.getKeywordSnippet("source listener")),
 
     KW_SOURCE_WORKER(SnippetGenerator.getKeywordSnippet("source worker")),
-
-    KW_SOURCE_CLIENT(SnippetGenerator.getKeywordSnippet("source client")),
 
     KW_TRUE(SnippetGenerator.getKeywordSnippet("true")),
 

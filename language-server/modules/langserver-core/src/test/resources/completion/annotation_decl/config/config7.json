@@ -184,15 +184,6 @@
       "filterText": "source worker",
       "insertText": "source worker",
       "insertTextFormat": "Snippet"
-    },
-    {
-      "label": "source client",
-      "kind": "Keyword",
-      "detail": "Keyword",
-      "sortText": "Q",
-      "filterText": "source client",
-      "insertText": "source client",
-      "insertTextFormat": "Snippet"
     }
   ]
 }
