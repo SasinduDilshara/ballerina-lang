@@ -471,13 +471,13 @@ public class Package {
         private DependencyManifest dependencyManifest;
         private Map<ModuleId, ModuleContext> moduleContextMap;
         private Project project;
+        private final DependencyGraph<ResolvedPackageDependency> dependencyGraph;
         private CompilationOptions compilationOptions;
         private TomlDocumentContext ballerinaTomlContext;
         private TomlDocumentContext dependenciesTomlContext;
         private TomlDocumentContext cloudTomlContext;
         private TomlDocumentContext compilerPluginTomlContext;
         private MdDocumentContext packageMdContext;
-        private PackageContext oldPackageContext;
 
         public Modifier(Package oldPackage) {
             this.packageId = oldPackage.packageId();
@@ -485,13 +485,13 @@ public class Package {
             this.dependencyManifest = oldPackage.dependencyManifest();
             this.moduleContextMap = copyModules(oldPackage);
             this.project = oldPackage.project;
+            this.dependencyGraph = oldPackage.getResolution().dependencyGraph();
             this.compilationOptions = oldPackage.compilationOptions();
             this.ballerinaTomlContext = oldPackage.packageContext.ballerinaTomlContext().orElse(null);
             this.dependenciesTomlContext = oldPackage.packageContext.dependenciesTomlContext().orElse(null);
             this.cloudTomlContext = oldPackage.packageContext.cloudTomlContext().orElse(null);
             this.compilerPluginTomlContext = oldPackage.packageContext.compilerPluginTomlContext().orElse(null);
             this.packageMdContext = oldPackage.packageContext.packageMdContext().orElse(null);
-            this.oldPackageContext = oldPackage.packageContext;
         }
 
         Modifier updateModules(Set<ModuleContext> newModuleContexts) {
@@ -609,6 +609,8 @@ public class Package {
             return this;
         }
 
+
+
         Modifier updateBallerinaToml(BallerinaToml ballerinaToml) {
             this.ballerinaTomlContext = ballerinaToml.ballerinaTomlContext();
             updatePackageManifest();
@@ -663,11 +665,9 @@ public class Package {
                     this.oldPackageContext.idlPluginManager());
             this.project.setCurrentPackage(new Package(newPackageContext, this.project));
 
-            if (oldPackageContext.cachedCompilation() != null) {
-                DependencyGraph<ResolvedPackageDependency> newDepGraph = this.project.currentPackage().getResolution()
-                        .dependencyGraph();
-                cleanPackageCache(oldPackageContext.getResolution().dependencyGraph(), newDepGraph);
-            }
+            DependencyGraph<ResolvedPackageDependency> newDepGraph = this.project.currentPackage().getResolution()
+                    .dependencyGraph();
+            cleanPackageCache(this.dependencyGraph, newDepGraph);
             return this.project.currentPackage();
         }
 
