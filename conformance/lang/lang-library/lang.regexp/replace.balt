@@ -12,7 +12,7 @@ function init() {
     string result11 = regExpr1.replace(str1, replacement1, 0);
     io:println(result11); // @output Replace ThusTextThis
 
-    string result12 = regExpr1.replace(str1, replacement1, 11);
+    string result12 = regexp:replace(regExpr1, str1, replacement1, 11);
     io:println(result12); // @output ReplaceThis TextThis
 
     string result2 = re `This`.replace("ReplaceThisThisTextThis", "# ");
@@ -72,6 +72,11 @@ function init() {
     var result2 = regExpr2.replace(str2, "2");
     io:println(result2 is string); // @output true
     io:println(result2); // @output Replace2ThisTextThis
+
+    string str3 = "ReplaceThisThisTextThis";
+    var regExpr3 = re `This`;
+    string result3 = regExpr3.replace(str3, "3");
+    io:println(result3); // @output Replace3ThisTextThis
 }
 
 Test-Case: error
@@ -82,9 +87,9 @@ function errorFunction() {
     string str = "ReplaceThisThisTextThis";
     var regExpr = re `This`;
 
-    int _ = regExpr1.replace(str, "a"); // @error expects a int, but replace() returns string
+    int _ = regExpr.replace(str, "a"); // @error expects a int, but replace() returns string
 
-    string:Char _ = regExpr1.replace(str, "a"); // @error expects a string:Char, but replace() returns string
+    string:Char _ = regExpr.replace(str, "a"); // @error expects a string:Char, but replace() returns string
 }
 
 
@@ -96,9 +101,9 @@ function errorFunction() {
     string str = "ReplaceThisThisTextThis";
     var regExpr = re `This`;
 
-    string _ = regExpr1.replace(str); // @error missing Replacement argument
+    string _ = regExpr.replace(str); // @error missing Replacement argument
 
-    string _ = regExpr1.replace(); // @error missing string argument
+    string _ = regExpr.replace(); // @error missing string argument
 
 }
 
@@ -107,13 +112,15 @@ Description: Test passing invalid parameters to `replace` method.
 Labels: function-call-expr, regexp, replace, method-call-expr
 
 function errorFunction(string|int si) {
-    string _ = regExpr1.replace("ReplaceThisThisTextThis", 12); // @error int is not a subtype of Replacment
+    var regExpr = re `This`;
 
-    string _ = regExpr1.replace(121314, "12"); // @error int is not a subtype of string
+    string _ = regExpr.replace("ReplaceThisThisTextThis", 12); // @error int is not a subtype of Replacment
 
-    string _ = regExpr1.replace(si, "12"); // @error (string|int) is not a subtype of string
+    string _ = regExpr.replace(121314, "12"); // @error int is not a subtype of string
 
-    string _ = regExpr1.replace("ReplaceThisThisTextThis", "This", "1); // @error string is not a subtype of int
+    string _ = regExpr.replace(si, "12"); // @error (string|int) is not a subtype of string
+
+    string _ = regExpr.replace("ReplaceThisThisTextThis", "This", "1"); // @error string is not a subtype of int
 }
 
 Test-Case: error
@@ -121,5 +128,7 @@ Description: Test passing too many parameters to `replace` method.
 Labels: function-call-expr, regexp, replace, method-call-expr
 
 function errorFunction(string|int si) {
-    string _ = regExpr1.replace("ReplaceThisThisTextThis", "This", 1, 2); // @error too many arguments
+    var regExpr = re `This`;
+    
+    string _ = regExpr.replace("ReplaceThisThisTextThis", "This", 1, 2); // @error too many arguments
 }

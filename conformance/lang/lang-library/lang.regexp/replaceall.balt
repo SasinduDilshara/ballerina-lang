@@ -13,7 +13,10 @@ function init() {
     io:println(result11); // @output ReplaceXXTextX
 
     string result12 = regExpr1.replaceAll(str1, replacement1, 1);
-    io:println(result12); // @output ReplaceThisXTextX
+    io:println(result12); // @output RReplaceXXTextX
+
+    string result13 = regExpr1.replaceAll(str1, replacement1, 8);
+    io:println(result13); // @output ReplaceTReplaceThisXTextX
 
     string result2 = re `This`.replaceAll("ReplaceThisThisTextThis", "#");
     io:println(result2); // @output Replace##Text#
@@ -27,7 +30,7 @@ function init() {
     string str4 = "100100011";
     var regExpr4 = re `0+`;
     string replacement4 = "*";
-    string result4 = regExpr4.replace(str4, replacement4);
+    string result4 = regExpr4.replaceAll(str4, replacement4);
     io:println(result4); // @output "1*1*11"
 
     string str5 = "WillNotBeMatched";
@@ -42,10 +45,10 @@ Description: Test `replaceAll` function with replacement function.
 Labels: function-call-expr, regexp, replaceAll, method-call-expr
 
 function init() {
-    string str1 = "100000100011";
+    string str1 = "1(00000)1(000)11";
     var regExpr1 = re `0+`;
     string result1 = regExpr1.replaceAll(str1, replacementFunctionForReplaceAll);
-    io:println(result1); // @output "121211"
+    io:println(result1); // @output "1(1)1(1)11"
 }
 
 isolated function replacementFunctionForReplaceAll(regexp:Groups groups) returns string {
@@ -63,9 +66,9 @@ function init() {
     io:println(result1 is string); // @output true
     io:println(result1); // @output Replace11Text1
 
-    string str1 = "ReplaceThisThisTextThis";
-    var regExpr1 = re `This`;
-    var result2 = regExpr1.replaceAll(str1, "2");
+    string str2 = "ReplaceThisThisTextThis";
+    var regExpr2 = re `This`;
+    var result2 = regExpr2.replaceAll(str2, "2");
     io:println(result2 is string); // @output true
     io:println(result2); // @output Replace22Text2
 }
@@ -78,9 +81,9 @@ function errorFunction() {
     string str = "ReplaceThisThisTextThis";
     var regExpr = re `This`;
 
-    int _ = regExpr1.replaceAll(str, "a"); // @error expects a int, but replaceAll() returns string
+    int _ = regExpr.replaceAll(str, "a"); // @error expects a int, but replaceAll() returns string
 
-    string:Char _ = regExpr1.replaceAll(str, "a"); // @error expects a string:Char, but replaceAll() returns string
+    string:Char _ = regExpr.replaceAll(str, "a"); // @error expects a string:Char, but replaceAll() returns string
 }
 
 
@@ -92,9 +95,9 @@ function errorFunction() {
     string str = "ReplaceThisThisTextThis";
     var regExpr = re `This`;
 
-    string _ = regExpr1.replaceAll(str); // @error missing Replacement argument
+    string _ = regExpr.replaceAll(str); // @error missing Replacement argument
 
-    string _ = regExpr1.replaceAll(); // @error missing string argument
+    string _ = regExpr.replaceAll(); // @error missing string argument
 
 }
 
@@ -103,13 +106,13 @@ Description: Test passing invalid parameters to `replaceAll` method.
 Labels: function-call-expr, regexp, replaceAll, method-call-expr
 
 function errorFunction(string|int si) {
-    string _ = regExpr1.replaceAll("ReplaceThisThisTextThis", 12); // @error int is not a subtype of Replacment
+    var regExpr = re `This`;
+    string str = "ReplaceThisThisTextThis";
+    string _ = regExpr.replaceAll("ReplaceThisThisTextThis", 12); // @error int is not a subtype of Replacment
 
-    string _ = regExpr1.replaceAll(121314, "12"); // @error int is not a subtype of string
+    string _ = regExpr.replaceAll(121314, "12"); // @error int is not a subtype of string
 
-    string _ = regExpr1.replaceAll(si, "12"); // @error (string|int) is not a subtype of string
-
-    string _ = regExpr1.replaceAll("ReplaceThisThisTextThis", "This", "1); // @error string is not a subtype of int
+    string _ = regExpr.replaceAll("ReplaceThisThisTextThis", "This", "1"); // @error string is not a subtype of int
 }
 
 Test-Case: error
@@ -117,5 +120,6 @@ Description: Test passing too many parameters to `replaceAll` method.
 Labels: function-call-expr, regexp, replaceAll, method-call-expr
 
 function errorFunction() {
-    string _ = regExpr1.replaceAll("ReplaceThisThisTextThis", "This", 1, 2); // @error too many arguments
+    var regExpr = re `This`;
+    string _ = regExpr.replaceAll("ReplaceThisThisTextThis", "This", 1, 2); // @error too many arguments
 }

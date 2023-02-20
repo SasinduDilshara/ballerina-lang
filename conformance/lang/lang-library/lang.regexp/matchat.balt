@@ -10,10 +10,10 @@ function init() {
     regexp:Span? res1 = regExpr1.matchAt(str1);
     io:println(res1 is ()); // @output true
 
-    regexp:Span? res2 = regExpr1.matchAt(str1, 0);
+    regexp:Span? res2 = regexp:matchAt(regExpr1, str1, 0);
     io:println(res2 is ()); // @output true
 
-    regexp:Span? res3 = regExpr1.matchAt(str1, 5);
+    regexp:Span? res3 = re `Here`.matchAt(str1, 5);
     io:println(res3 is regexp:Span); // @output true
     regexp:Span res3span = <regexp:Span> res3;
     io:println(res3span.startIndex); // @output 5
@@ -22,7 +22,7 @@ function init() {
 }
 
 Test-Case: output
-Description: Test `matchAt` function.
+Description: Test `matchAt` function at module level.
 Labels: function-call-expr, regexp, matchAt, method-call-expr
 
 import ballerina/lang.regexp;
@@ -30,8 +30,8 @@ import ballerina/lang.regexp;
 var regExpr1 = re `Here.`;
 string str1 = "MatchHere!";
 regexp:Span? res1 = regExpr1.matchAt(str1);
-regexp:Span? res2 = regExpr1.matchAt(str1, 0);
-regexp:Span? res3 = regExpr1.matchAt(str1, 5);
+regexp:Span? res2 = regexp:matchAt(regExpr1, str1, 0);
+regexp:Span? res3 = re `Here.`.matchAt(str1, 5);
 regexp:Span res3span = <regexp:Span> res3;
 
 function init() {
@@ -81,7 +81,7 @@ function errorFunction() {
     var regExpr1 = re `MatchHere`;
     string str1 = "Here";
 
-    regexp:Span _ = regExpr1.matchAt(str1, 5); // @error expects a regexp:Span, but isFullMatch returns regexp:Span?
+    regexp:Span _ = regExpr1.matchAt(str1, 5); // @error expects a regexp:Span, but matchAt returns regexp:Span?
 
     int _ = regExpr1.matchAt(str1); // @error expects a int, but matchAt returns regexp:Span?
 }
@@ -123,5 +123,5 @@ import ballerina/lang.regexp;
 function errorFunction(string|int si) {
     var regExpr1 = re `Here`;
 
-    regexp:Span? _ = regExpr1.isFullMatch("MatchHere", 5, 1); // @error too many arguments
+    regexp:Span? _ = regExpr1.matchAt("MatchHere", 5, 1); // @error too many arguments
 }

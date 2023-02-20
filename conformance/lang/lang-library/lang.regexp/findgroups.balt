@@ -85,8 +85,11 @@ function init() {
     any result1 = regExpr1.findGroups(str1);
     io:println(result1 is regexp:Groups); // @output true
 
-    var result2 = regExpr1.findGroups(str1);
+    var result2 = regExpr1.findGroups(str1, 10);
     io:println(result2 is regexp:Groups); // @output true
+
+    var result3 = regExpr1.findGroups(str1, 16);
+    io:println(result3 is ()); // @output true
 }
 
 Test-Case: error
@@ -100,6 +103,8 @@ function errorFunction() {
     string str1 = "Here";
 
     regexp:Groups _ = regExpr1.findGroups(str1, 5); // @error expects a regexp:Group, but findGroups() returns regexp:Groups?
+
+    regexp:Groups[] _ = regExpr1.findGroups(str1, 5); // @error expects a regexp:Group[], but findGroups() returns regexp:Groups?
 
     int _ = regExpr1.findGroups(str1); // @error expects a int, but findGroups() returns regexp:Groups?
 }
@@ -127,6 +132,8 @@ function errorFunction() {
     var regExpr1 = re `Here`;
 
     regexp:Groups? _ = regExpr1.findGroups(12); // @error int is not a subtype of string
+
+    regexp:Groups? _ = regExpr1.findGroups("MatchHere", "12"); // @error string is not a subtype of int
 }
 
 Test-Case: error
