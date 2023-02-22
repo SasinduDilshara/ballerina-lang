@@ -5,9 +5,15 @@ Labels: function-call-expr, regexp, regexp:fromString, string
 import ballerina/lang.regexp;
 
 function init() {
+    string emailRegex = string `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+
     string:RegExp|error x = regexp:fromString("A\\p{Lu}??B+\\W\\(+?C*D{1,4}?");
     io:println(x is string:RegExp); // @output true
     io:println(x is string:RegExp && re `A\p{Lu}??B+\W\(+?C*D{1,4}?` == x); // @output true
+
+    var x2 = regexp:fromString(emailRegex);
+    io:println(x2 is string:RegExp); // @output true
+    io:println(x2 is string:RegExp && re `${emailRegex}` == x2); // @output true
 }
 
 Test-Case: output
@@ -16,11 +22,16 @@ Labels: function-call-expr, regexp, regexp:fromString, string
 
 import ballerina/lang.regexp;
 
+string emailRegex = string `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;    
 string:RegExp|error x = regexp:fromString("A\\p{Lu}??B+\\W\\(+?C*D{1,4}?");
+var x2 = regexp:fromString(emailRegex);
 
 function init() {
     io:println(x is string:RegExp); // @output true
     io:println(x is string:RegExp && re `A\p{Lu}??B+\W\(+?C*D{1,4}?` == x); // @output true
+
+    io:println(x2 is string:RegExp); // @output true
+    io:println(x2 is string:RegExp && re `${emailRegex}` == x2); // @output true
 }
 
 Test-Case: output
@@ -30,11 +41,16 @@ Labels: function-call-expr, regexp, regexp:fromString, string, error
 import ballerina/lang.regexp;
 
 function init() {
+    string errorRegex = "AB+^*";
+
     string:RegExp|error x = regexp:fromString("AB+^*");
     io:println(x is error); // @output true
 
-    string:RegExp|error x1 = regexp:fromString("(abc");
-    io:println(x1 is error); // @output true
+    string:RegExp|error x2 = regexp:fromString("(abc");
+    io:println(x2 is error); // @output true
+
+    string:RegExp|error x3 = regexp:fromString(errorRegex);
+    io:println(x3 is error); // @output true
 }
 
 Test-Case: output
@@ -76,7 +92,7 @@ Labels: function-call-expr, regexp, regexp:fromString, string
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    string _ = regexp:fromString(); // @error missing string argument
+    string:RegExp _ = regexp:fromString(); // @error missing string argument
 }
 
 Test-Case: error
@@ -86,7 +102,7 @@ Labels: function-call-expr, regexp, regexp:fromString, string
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    string _ = regexp:fromString(1213); // @error int is not a subtype of string
+    string:RegExp|error e = regexp:fromString(1213); // @error int is not a subtype of string
 }
 
 Test-Case: error
