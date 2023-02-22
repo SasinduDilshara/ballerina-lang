@@ -132,6 +132,19 @@ function errorFunction() {
     regexp:Span? _ = emailRegex.find(str1, -5); // @error index out of bound
 }
 
+Test-Case: error
+Description: Test `find` function with large integer values.
+Labels: function-call-expr, regexp, find, method-call-expr
+
+import ballerina/lang.regexp;
+
+function errorFunction() {
+    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    string str1 = "abc@gmail.com";
+
+    regexp:Span? _ = emailRegex.find(str1, 1000000000000000000000); // @error out of range
+}
+
 Test-Case: output
 Description: Test assignability of `find` function result.
 Labels: function-call-expr, regexp, find, method-call-expr
@@ -193,8 +206,8 @@ function errorFunction() {
     var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
     string str1 = "abcde@gmail.com";
 
-    regexp:Span? _ = regExpr1.find(12); // @error int is not a subtype of string
-    regexp:Span? _ = regExpr1.find("MatchHereAndHere", "5"); // @error string is not a subtype of int
+    regexp:Span? _ = emailRegex.find(12); // @error int is not a subtype of string
+    regexp:Span? _ = emailRegex.find("MatchHereAndHere", "5"); // @error string is not a subtype of int
     regexp:Span? _ = regexp:find(re = "abc", str = "MatchHereAndHere",  startIndex = 2); // @error string is not a subtype of RegExp
 }
 
