@@ -105,6 +105,29 @@ function init() {
 }
 
 Test-Case: output
+Description: Test `replaceAll` function with replacement function in module level.
+Labels: function-call-expr, regexp, replaceAll, method-call-expr
+
+string str1 = "100000100011";
+var regExpr = re `0+`;
+string result1 = regExpr.replace(str1, replacementFunctionForReplace2);
+string str2 = "100100011";
+string result2 = regExpr.replace(str2, replacementFunctionForReplace2, 4);
+string str3 = "11111111";
+string result3 = re `0+`.replace(str3, replacementFunctionForReplace2, 4);
+
+function init() {
+    io:println(result1); // @output 16100011
+    io:println(result2); // @output 1001711
+    io:println(result3); // @output 11111111
+}
+
+isolated function replacementFunctionForReplace2(regexp:Groups groups) returns string {
+    return groups[0].endIndex.toString();
+}
+
+
+Test-Case: output
 Description: Test assignability of `replace` function result.
 Labels: function-call-expr, regexp, replace, method-call-expr
 
@@ -132,10 +155,8 @@ function errorFunction() {
     string:RegExp phoneRegex = re `\+?[0-9]{10,14}`;
 
     int _ = phoneRegex.replace(str, "a"); // @error expects a int, but replace() returns string
-
     string:Char _ = phoneRegex.replace(str, "a"); // @error expects a string:Char, but replace() returns string
 }
-
 
 Test-Case: error
 Description: Test missing required parameters for `replace` method.
@@ -162,7 +183,7 @@ function errorFunction(string|int si) {
 
     string _ = phoneRegex.replace("ReplaceThisThisTextThis", 12); // @error int is not a subtype of Replacment
     string _ = phoneRegex.replace(121314, "12"); // @error int is not a subtype of string
-    string _ = phoneRegex.replace(str, 12); // @error string is not a subtype of int
+    string _ = phoneRegex.replace(str, 12); // @error Replacement is not a subtype of int
     string _ = regexp:replace(re = 1, replacement = "ReplaceThisThisTextThis", str = "This", startIndex = 1); // @error int is not a subtype of RegExp
 }
 
