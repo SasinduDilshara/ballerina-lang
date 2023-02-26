@@ -163,6 +163,7 @@ function errorFunction() {
 
 Test-Case: output
 Description: Test assignability of `findAllGroups` function result.
+Labels: function-call-expr, regexp, findAllGroups, method-call-expr
 
 import ballerina/lang.regexp;
 

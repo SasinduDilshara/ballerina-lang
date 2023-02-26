@@ -126,6 +126,31 @@ isolated function replacementFunctionForReplace2(regexp:Groups groups) returns s
     return groups[0].endIndex.toString();
 }
 
+Test-Case: error
+Description: Test `replace` function with negative range.
+Labels: function-call-expr, regexp, replace, method-call-expr
+
+import ballerina/lang.regexp;
+
+function errorFunction() {
+    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    string str1 = "abc@gmail.com";
+
+    string _ = emailRegex.replace(str1, " ", -5); // @error index out of bound
+}
+
+Test-Case: error
+Description: Test `replace` function with large integer values.
+Labels: function-call-expr, regexp, replace, method-call-expr
+
+import ballerina/lang.regexp;
+
+function errorFunction() {
+    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    string str1 = "abc@gmail.com";
+
+    string _ = emailRegex.replace(str1, " ", 1000000000000000000000); // @error out of range
+}
 
 Test-Case: output
 Description: Test assignability of `replace` function result.
