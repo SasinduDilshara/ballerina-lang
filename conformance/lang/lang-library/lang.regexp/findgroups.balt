@@ -134,7 +134,7 @@ Labels: function-call-expr, regexp, findGroups, method-call-expr
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    var emailRegex = re `(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)`;
     string str1 = "abc@gmail.com and def@gmail.com are emails, but ut@.com is not an email";
 
     regexp:Groups? _ = emailRegex.findGroups(str1, -5); // @error index out of bound
@@ -147,7 +147,7 @@ Labels: function-call-expr, regexp, findGroups, method-call-expr
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    var emailRegex = re `(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)`;
     string str1 = "abc@gmail.com and def@gmail.com are emails, but ut@.com is not an email";
 
     regexp:Groups? _ = emailRegex.findGroups(str1, 1000000000000000000000); // @error out of range
@@ -160,7 +160,7 @@ Labels: function-call-expr, regexp, findGroups, method-call-expr
 import ballerina/lang.regexp;
 
 function init() {
-    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    var emailRegex = re `(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)`;
     string str1 = "abc@gmail.com and def@gmail.com are emails, but ut@.com is not an email";
 
     any result1 = emailRegex.findGroups(str1);
@@ -183,7 +183,7 @@ Labels: function-call-expr, regexp, findGroups, method-call-expr
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    var emailRegex = re `(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)`;
     string str1 = "abc@gmail.com and def@gmail.com are emails, but ut@.com is not an email";
 
     regexp:Groups _ = emailRegex.findGroups(str1, 5); // @error expects a regexp:Groups, but findGroups() returns regexp:Groups?
@@ -198,7 +198,7 @@ Labels: function-call-expr, regexp, findGroups, method-call-expr
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    var emailRegex = re `(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)`;
     string str1 = "abc@gmail.com and def@gmail.com are emails, but ut@.com is not an email";
 
     regexp:Groups? _ = emailRegex.findGroups(); // @error missing string argument
@@ -214,7 +214,7 @@ Labels: function-call-expr, regexp, findGroups, method-call-expr
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    var emailRegex = re `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`;
+    var emailRegex = re `(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)`;
     string str1 = "abcde@gmail.com";
 
     regexp:Groups? _ = emailRegex.findGroups(12); // @error int is not a subtype of string
@@ -229,7 +229,7 @@ Labels: function-call-expr, regexp, find, method-call-expr
 import ballerina/lang.regexp;
 
 function errorFunction() {
-    var regExpr1 = re `Here`;
+    var regExpr1 = re `(Here)`;
 
     regexp:Groups? _ = regExpr1.findGroups("MatchHereAndHere", 5, 1); // @error too many arguments
 }
