@@ -972,9 +972,9 @@ function testSplit() {
     assertEquality(arrExpected5, resArr5);
 
     string str6 = "ballerina.geeks.wso2";
-    string[] arrExpected6 = [str6];
-    string[] resArr6 = re `.`.split(str6);
-    assertEquality(1, resArr6.length());
+    string[] arrExpected6 = ["ballerina", "geeks", "wso2"];
+    string[] resArr6 = re `\.`.split(str6);
+    assertEquality(3, resArr6.length());
     assertEquality(arrExpected6, resArr6);
 
     string str7 = "zzzzayyyybxxxxawwww";
@@ -994,6 +994,96 @@ function testSplit() {
     string[] arrExpected9 = ["1", "2", "3", "4", "5"];
     assertEquality(5, resArr9.length());
     assertEquality(arrExpected9, resArr9);
+
+    string str10 = "1 2   3 4  5";
+    string[] resArr10 = re `${""}`.split(str10);
+    string[] arrExpected10 = ["1", " ", "2", " ", " ", " ", "3", " ", "4", " ", " ", "5", ""];
+    assertEquality(13, resArr10.length());
+    assertEquality(arrExpected10, resArr10);
+
+    string str11 = "1 2   3 4  5";
+    string[] resArr11 = re `()`.split(str11);
+    string[] arrExpected11 = ["1", " ", "2", " ", " ", " ", "3", " ", "4", " ", " ", "5", ""];
+    assertEquality(13, resArr11.length());
+    assertEquality(arrExpected11, resArr11);
+
+    string str12 = "";
+    string[] resArr12 = re `${""}`.split(str12);
+    string[] arrExpected12 = [""];
+    assertEquality(1, resArr12.length());
+    assertEquality(arrExpected12, resArr12);
+
+    string str13 = "";
+    string[] resArr13 = re `()`.split(str13);
+    string[] arrExpected13 = [""];
+    assertEquality(1, resArr13.length());
+    assertEquality(arrExpected13, resArr13);
+
+    string str14 = "";
+    string[] resArr14 = re `[a-z]`.split(str14);
+    string[] arrExpected14 = [""];
+    assertEquality(1, resArr14.length());
+    assertEquality(arrExpected14, resArr14);
+
+    string str15 = "abcd";
+    string[] resArr15 = re `[a-z]`.split(str15);
+    string[] arrExpected15 = ["", "", "", "", ""];
+    assertEquality(5, resArr15.length());
+    assertEquality(arrExpected15, resArr15);
+
+    string str16 = ",";
+    string[] resArr16 = re `,`.split(str16);
+    string[] arrExpected16 = ["", ""];
+    assertEquality(2, resArr16.length());
+    assertEquality(arrExpected16, resArr16);
+
+    string str17 = "ab123";
+    string[] resArr17 = re `[a-z]`.split(str17);
+    string[] arrExpected17 = ["", "", "123"];
+    assertEquality(3, resArr17.length());
+    assertEquality(arrExpected17, resArr17);
+
+    string str18 = "a\\b";
+    string[] resArr18 = re `\\`.split(str18);
+    string[] arrExpected18 = ["a", "b"];
+    assertEquality(2, resArr18.length());
+    assertEquality(arrExpected18, resArr18);
+
+    string str19 = "a123";
+    string[] resArr19 = re `a`.split(str19);
+    string[] arrExpected19 = ["", "123"];
+    assertEquality(2, resArr19.length());
+    assertEquality(arrExpected19, resArr19);
+
+    string str20 = "123a";
+    string[] resArr20 = re `a`.split(str20);
+    string[] arrExpected20 = ["123", ""];
+    assertEquality(2, resArr20.length());
+    assertEquality(arrExpected20, resArr20);
+
+    string str21 = "abab";
+    string[] resArr21 = re `[ab]`.split(str21);
+    string[] arrExpected21 = ["", "", "", "", ""];
+    assertEquality(5, resArr21.length());
+    assertEquality(arrExpected21, resArr21);
+
+    string str22 = "*a*b*c*";
+    string[] resArr22 = re `\*`.split(str22);
+    string[] arrExpected22 = ["", "a", "b", "c", ""];
+    assertEquality(5, resArr22.length());
+    assertEquality(arrExpected22, resArr22);
+
+    string str23 = "1000101001101";
+    string[] resArr23 = re `0+`.split(str23);
+    string[] arrExpected23 = ["1", "1", "1", "11", "1"];
+    assertEquality(5, resArr23.length());
+    assertEquality(arrExpected23, resArr23);
+
+    string str24 = "ab";
+    string[] resArr24 = re `a*`.split(str24);
+    string[] arrExpected24 = ["", "", "b", ""];
+    assertEquality(4, resArr24.length());
+    assertEquality(arrExpected24, resArr24);
 }
 
 function testLangLibFuncWithNamedArgExpr() {
