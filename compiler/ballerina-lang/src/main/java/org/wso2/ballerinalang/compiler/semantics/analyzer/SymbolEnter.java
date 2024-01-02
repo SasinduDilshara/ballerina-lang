@@ -486,7 +486,6 @@ public class SymbolEnter extends BLangNodeVisitor {
                 }
             }
         }
-        typeResolver.clearUnknowTypeRefs();
     }
 
     private void defineDependentFields(List<BLangNode> typeDefNodes, SymbolEnv pkgEnv) {

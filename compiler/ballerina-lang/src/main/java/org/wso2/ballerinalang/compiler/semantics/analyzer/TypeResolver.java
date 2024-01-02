@@ -163,7 +163,6 @@ public class TypeResolver {
     private HashSet<BLangClassDefinition> resolvedClassDef = new HashSet<>();
     private Map<String, BLangNode> modTable = new LinkedHashMap<>();
     private Map<String, BLangConstantValue> constantMap = new HashMap<>();
-    private HashSet<LocationData> unknownTypeRefs;
     private SymbolEnv pkgEnv;
     private int currentDepth;
     private Stack<BType> resolvingTypes;
@@ -184,11 +183,6 @@ public class TypeResolver {
         this.constantTypeChecker = ConstantTypeChecker.getInstance(context);
         this.resolveConstantExpressionType = ConstantTypeChecker.ResolveConstantExpressionType.getInstance(context);
         this.effectiveTypePopulator = EffectiveTypePopulator.getInstance(context);
-        this.unknownTypeRefs = new HashSet<>();
-    }
-
-    public void clearUnknowTypeRefs() {
-        unknownTypeRefs.clear();
     }
 
     private void clear() {
@@ -614,21 +608,21 @@ public class TypeResolver {
         dlog.error(pos, DiagnosticErrorCode.CYCLIC_TYPE_REFERENCE, dependencyList);
     }
 
-    public boolean isNotUnknownTypeRef(BLangUserDefinedType td) {
+    public boolean isNotUnknownTypeRef(BLangUserDefinedType td, HashSet<TypeResolver.LocationData> unknownTypeRefs) {
         Location pos = td.pos;
         LocationData locationData = new LocationData(td.typeName.value, pos.lineRange().startLine().line(),
                 pos.lineRange().startLine().offset());
         return unknownTypeRefs.add(locationData);
     }
 
-    public BType validateModuleLevelDef(String name, Name pkgAlias, Name typeName, BLangUserDefinedType td) {
+    public BType validateModuleLevelDef(String name, Name pkgAlias, Name typeName, BLangUserDefinedType td, HashSet<TypeResolver.LocationData> unknownTypeRefs) {
         BLangNode moduleLevelDef = pkgAlias == Names.EMPTY ? modTable.get(name) : null;
         if (moduleLevelDef == null) {
             if (missingNodesHelper.isMissingNode(pkgAlias) || missingNodesHelper.isMissingNode(typeName)) {
                 return symTable.semanticError;
             }
 
-            if (isNotUnknownTypeRef(td)) {
+            if (isNotUnknownTypeRef(td, unknownTypeRefs)) {
                 dlog.error(td.pos, DiagnosticErrorCode.UNKNOWN_TYPE, name);
             }
             return symTable.semanticError;
@@ -1613,7 +1607,7 @@ public class TypeResolver {
 
             LocationData locationData = new LocationData(name, td.pos.lineRange().startLine().line(),
                     td.pos.lineRange().startLine().offset());
-            if (unknownTypeRefs.add(locationData)) {
+            if (analyzerData.unknownTypeRefs.add(locationData)) {
                 dlog.error(td.pos, DiagnosticErrorCode.UNKNOWN_TYPE, td.typeName);
             }
             return symTable.semanticError;
@@ -2118,7 +2112,7 @@ public class TypeResolver {
      *
      * @since 2201.7.0
      */
-    class ResolverData {
+    static class ResolverData {
         SymbolEnv env;
         Map<String, BLangNode> modTable;
         int depth;
@@ -2130,12 +2124,12 @@ public class TypeResolver {
      *
      * @since 2201.7.0
      */
-    class LocationData {
+    static class LocationData {
         private String name;
         private int row;
         private int column;
 
-        LocationData(String name, int row, int column) {
+        public LocationData(String name, int row, int column) {
             this.name = name;
             this.row = row;
             this.column = column;

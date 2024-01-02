@@ -520,8 +520,13 @@ public class SymbolResolver extends BLangNodeTransformer<SymbolResolver.Analyzer
         return resolveTypeNode(typeNode, data, env, DiagnosticErrorCode.UNKNOWN_TYPE);
     }
 
-    public BType resolveTypeNode(BLangType typeNode, SymbolEnv env, DiagnosticCode diagCode) {
-        AnalyzerData data = new AnalyzerData(env);
+    public BType resolveTypeNode(BLangType typeNode, SymbolEnv env, HashSet<TypeResolver.LocationData> unknownTypeRefs) {
+        AnalyzerData data = new AnalyzerData(env, unknownTypeRefs);
+        return resolveTypeNode(typeNode, data, env, DiagnosticErrorCode.UNKNOWN_TYPE);
+    }
+
+    public BType resolveTypeNode(BLangType typeNode, SymbolEnv env, HashSet<TypeResolver.LocationData> unknownTypeRefs, DiagnosticCode diagCode) {
+        AnalyzerData data = new AnalyzerData(env, unknownTypeRefs);
         return resolveTypeNode(typeNode, data, env, diagCode);
     }
 
@@ -1715,7 +1720,7 @@ public class SymbolResolver extends BLangNodeTransformer<SymbolResolver.Analyzer
         if (env.logErrors && symbol == symTable.notFoundSymbol) {
             if (!missingNodesHelper.isMissingNode(pkgAlias) && !missingNodesHelper.isMissingNode(typeName) &&
                     !symbolEnter.isUnknownTypeRef(userDefinedTypeNode)
-                    && typeResolver.isNotUnknownTypeRef(userDefinedTypeNode)) {
+                    && typeResolver.isNotUnknownTypeRef(userDefinedTypeNode, data.unknownTypeRefs)) {
                 dlog.error(userDefinedTypeNode.pos, data.diagCode, typeName);
             }
             return symTable.semanticError;
@@ -1738,7 +1743,7 @@ public class SymbolResolver extends BLangNodeTransformer<SymbolResolver.Analyzer
             return type;
         }
 
-        return typeResolver.validateModuleLevelDef(name, pkgAlias, typeName, userDefinedTypeNode);
+        return typeResolver.validateModuleLevelDef(name, pkgAlias, typeName, userDefinedTypeNode, data.unknownTypeRefs);
     }
 
     public ParameterizedTypeInfo getTypedescParamValueType(List<BLangSimpleVariable> params,
@@ -2675,9 +2680,15 @@ public class SymbolResolver extends BLangNodeTransformer<SymbolResolver.Analyzer
     public static class AnalyzerData {
         SymbolEnv env;
         DiagnosticCode diagCode;
+        static HashSet<TypeResolver.LocationData> unknownTypeRefs = new HashSet<>();
 
         public AnalyzerData(SymbolEnv env) {
             this.env = env;
+        }
+
+        public AnalyzerData(SymbolEnv env, HashSet<TypeResolver.LocationData> unknownTypeRefs) {
+            this.env = env;
+            AnalyzerData.unknownTypeRefs = unknownTypeRefs;
         }
     }
 }

@@ -3139,7 +3139,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
     @Override
     public void visit(BLangErrorVarRef varRefExpr, AnalyzerData data) {
         if (varRefExpr.typeNode != null) {
-            BType bType = symResolver.resolveTypeNode(varRefExpr.typeNode, data.env);
+            BType bType = symResolver.resolveTypeNode(varRefExpr.typeNode, data.env, data.unknownTypeRefs);
             varRefExpr.setBType(bType);
             checkIndirectErrorVarRef(varRefExpr, data);
             data.resultType = bType;
@@ -3593,7 +3593,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
     public void visit(BLangErrorConstructorExpr errorConstructorExpr, AnalyzerData data) {
         BLangUserDefinedType userProvidedTypeRef = errorConstructorExpr.errorTypeRef;
         if (userProvidedTypeRef != null) {
-            symResolver.resolveTypeNode(userProvidedTypeRef, data.env,
+            symResolver.resolveTypeNode(userProvidedTypeRef, data.env, data.unknownTypeRefs,
                                         DiagnosticErrorCode.UNDEFINED_ERROR_TYPE_DESCRIPTOR);
         }
         validateErrorConstructorPositionalArgs(errorConstructorExpr, data);
@@ -4218,7 +4218,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
             }
         }
         BLangTypeInit cIExpr = objectCtorExpression.typeInit;
-        BType actualType = symResolver.resolveTypeNode(cIExpr.userDefinedType, data.env);
+        BType actualType = symResolver.resolveTypeNode(cIExpr.userDefinedType, data.env, data.unknownTypeRefs);
         if (actualType == symTable.semanticError) {
             data.resultType = symTable.semanticError;
             return;
@@ -4324,7 +4324,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
 
         BType actualType;
         if (cIExpr.userDefinedType != null) {
-            actualType = symResolver.resolveTypeNode(cIExpr.userDefinedType, data.env);
+            actualType = symResolver.resolveTypeNode(cIExpr.userDefinedType, data.env, data.unknownTypeRefs);
         } else {
             actualType = data.expType;
         }
@@ -5313,7 +5313,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
 
     public void visit(BLangTypedescExpr accessExpr, AnalyzerData data) {
         if (accessExpr.resolvedType == null) {
-            accessExpr.resolvedType = symResolver.resolveTypeNode(accessExpr.typeNode, data.env);
+            accessExpr.resolvedType = symResolver.resolveTypeNode(accessExpr.typeNode, data.env, data.unknownTypeRefs);
         }
 
         int resolveTypeTag = Types.getImpliedType(accessExpr.resolvedType).tag;
@@ -5590,7 +5590,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
         }
 
         BType targetType = getEffectiveReadOnlyType(conversionExpr.typeNode.pos,
-                                                  symResolver.resolveTypeNode(conversionExpr.typeNode, data.env), data);
+                                                  symResolver.resolveTypeNode(conversionExpr.typeNode, data.env, data.unknownTypeRefs), data);
 
         conversionExpr.targetType = targetType;
 
@@ -6364,6 +6364,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
         data.commonAnalyzerData.nonErrorLoggingCheck = true;
         int prevErrorCount = this.dlog.errorCount();
         this.dlog.resetErrorCount();
+        HashSet<TypeResolver.LocationData> unknownTypeRefs = (HashSet<TypeResolver.LocationData>) data.unknownTypeRefs.clone();
         this.dlog.mute();
 
         checkedExpr.expr.cloneAttempt++;
@@ -6378,6 +6379,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
         this.dlog.setErrorCount(prevErrorCount);
         if (!prevNonErrorLoggingCheck) {
             this.dlog.unmute();
+            data.unknownTypeRefs = unknownTypeRefs;
         }
         return rhsType;
     }
@@ -6398,7 +6400,7 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
 
     @Override
     public void visit(BLangTypeTestExpr typeTestExpr, AnalyzerData data) {
-        typeTestExpr.typeNode.setBType(symResolver.resolveTypeNode(typeTestExpr.typeNode, data.env));
+        typeTestExpr.typeNode.setBType(symResolver.resolveTypeNode(typeTestExpr.typeNode, data.env, data.unknownTypeRefs));
         checkExpr(typeTestExpr.expr, data);
 
         data.resultType = types.checkType(typeTestExpr, symTable.booleanType, data.expType);
@@ -9653,5 +9655,6 @@ public class TypeChecker extends SimpleBLangNodeAnalyzer<TypeChecker.AnalyzerDat
         boolean isResourceAccessPathSegments = false;
         QueryTypeChecker.AnalyzerData queryData = new QueryTypeChecker.AnalyzerData();
         Set<String> queryVariables;
+        HashSet<TypeResolver.LocationData> unknownTypeRefs = new HashSet<>();
     }
 }
