@@ -695,7 +695,9 @@ public class ClosureDesugar extends BLangNodeVisitor {
         rewriteStmts(blockNode.stmts, blockEnv);
 
         // Add block map to the 0th position if a block map symbol is there.
-        if (blockNode.mapSymbol != null) {
+        BVarSymbol mapSymbol = getMapSymbol(env.enclInvokable);
+        if (mapSymbol != null && mapSymbol != CLOSURE_MAP_NOT_FOUND) {
+            blockNode.mapSymbol = mapSymbol;
             // Add the closure map var as the first statement in the sequence statement.
             blockNode.stmts.add(0, getClosureMap(blockNode.mapSymbol, blockEnv));
         }
@@ -761,12 +763,13 @@ public class ClosureDesugar extends BLangNodeVisitor {
     }
 
     private BVarSymbol createMapSymbolIfAbsent(BLangNode node, int closureMapCount) {
+        if (node instanceof BLangBlockStmt) {
+            return createMapSymbolIfAbsent(env.enclInvokable, closureMapCount);
+        }
         NodeKind kind = node.getKind();
         switch (kind) {
             case BLOCK_FUNCTION_BODY:
                 return createMapSymbolIfAbsent((BLangBlockFunctionBody) node, closureMapCount);
-            case BLOCK:
-                return createMapSymbolIfAbsent((BLangBlockStmt) node, closureMapCount);
             case FUNCTION:
                 return createMapSymbolIfAbsent((BLangFunction) node, closureMapCount);
             case RESOURCE_FUNC:
@@ -832,12 +835,13 @@ public class ClosureDesugar extends BLangNodeVisitor {
         return classDef.oceEnvData.classEnclosedFunctionMap;
     }
 
-    private static BVarSymbol getMapSymbol(BLangNode node) {
+    private BVarSymbol getMapSymbol(BLangNode node) {
+        if (node instanceof BLangBlockStmt) {
+            return getMapSymbol(env.enclInvokable);
+        }
         switch (node.getKind()) {
             case BLOCK_FUNCTION_BODY:
                 return ((BLangBlockFunctionBody) node).mapSymbol;
-            case BLOCK:
-                return ((BLangBlockStmt) node).mapSymbol;
             case FUNCTION:
             case RESOURCE_FUNC:
                 return ((BLangFunction) node).mapSymbol;
