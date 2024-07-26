@@ -689,7 +689,6 @@ public class ClosureDesugar extends BLangNodeVisitor {
             ((BLangBlockFunctionBody) funcNode.body).stmts.add(position, stmt);
         }
     }
-
     @Override
     public void visit(BLangBlockStmt blockNode) {
         SymbolEnv blockEnv = SymbolEnv.createBlockEnv(blockNode, env);
@@ -697,9 +696,12 @@ public class ClosureDesugar extends BLangNodeVisitor {
         rewriteStmts(blockNode.stmts, blockEnv);
 
         // Add block map to the 0th position if a block map symbol is there.
-        if (blockNode.mapSymbol != null) {
+
+        BVarSymbol mapSymbol = getMapSymbol(env.enclInvokable, env);
+        if (mapSymbol != null && mapSymbol != CLOSURE_MAP_NOT_FOUND) {
+            blockNode.mapSymbol = mapSymbol;
             // Add the closure map var as the first statement in the sequence statement.
-            blockNode.stmts.add(0, getClosureMap(blockNode.mapSymbol, blockEnv));
+            blockNode.stmts.add(0, getClosureMap(blockNode.mapSymbol, env.enclInvokable.clonedEnv));
         }
 
         result = blockNode;
@@ -774,12 +776,13 @@ public class ClosureDesugar extends BLangNodeVisitor {
     }
 
     private BVarSymbol createMapSymbolIfAbsent(BLangNode node, int closureMapCount) {
+        if (node instanceof BLangBlockStmt) {
+            return createMapSymbolIfAbsent(env.enclInvokable, env.enclInvokable.clonedEnv.envCount);
+        }
         NodeKind kind = node.getKind();
         switch (kind) {
             case BLOCK_FUNCTION_BODY:
                 return createMapSymbolIfAbsent((BLangBlockFunctionBody) node, closureMapCount);
-            case BLOCK:
-                return createMapSymbolIfAbsent((BLangBlockStmt) node, closureMapCount);
             case FUNCTION:
                 return createMapSymbolIfAbsent((BLangFunction) node, closureMapCount);
             case RESOURCE_FUNC:
@@ -845,12 +848,13 @@ public class ClosureDesugar extends BLangNodeVisitor {
         return classDef.oceEnvData.classEnclosedFunctionMap;
     }
 
-    private static BVarSymbol getMapSymbol(BLangNode node) {
+    private static BVarSymbol getMapSymbol(BLangNode node, SymbolEnv env) {
+        if (node instanceof BLangBlockStmt) {
+            return getMapSymbol(env.enclInvokable, env);
+        }
         switch (node.getKind()) {
             case BLOCK_FUNCTION_BODY:
                 return ((BLangBlockFunctionBody) node).mapSymbol;
-            case BLOCK:
-                return ((BLangBlockStmt) node).mapSymbol;
             case FUNCTION:
             case RESOURCE_FUNC:
                 return ((BLangFunction) node).mapSymbol;
@@ -1420,7 +1424,7 @@ public class ClosureDesugar extends BLangNodeVisitor {
         // Recursively iterate back to the encl invokable and get all map symbols visited.
         TreeMap<Integer, BVarSymbol> enclMapSymbols = new TreeMap<>();
         while (symbolEnv != null && symbolEnv.enclInvokable == enclInvokable) {
-            BVarSymbol mapSym = getMapSymbol(symbolEnv.node);
+            BVarSymbol mapSym = getMapSymbol(symbolEnv.node, env);
 
             // Skip non-block bodies
             if (mapSym == CLOSURE_MAP_NOT_FOUND) {
