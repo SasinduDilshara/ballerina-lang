@@ -142,6 +142,11 @@ public class LSClientCapabilitiesImpl implements LSClientCapabilities {
                 Boolean.parseBoolean(String.valueOf(semanticTokensSupport));
         initializationOptions.setEnableSemanticTokens(enableSemanticTokens);
 
+        Object naturalProgrammingSupport = initOptions.get(InitializationOptions.KEY_ENABLE_NATURAL_PROGRAMMING);
+        boolean enableNaturalProgramming = naturalProgrammingSupport == null ||
+                Boolean.parseBoolean(String.valueOf(naturalProgrammingSupport));
+        initializationOptions.setEnableNaturalProgramming(enableNaturalProgramming);
+
         Object quickPickSupport = initOptions.get(InitializationOptions.KEY_QUICKPICK_SUPPORT);
         boolean enableQuickPickSupport = quickPickSupport != null &&
                 Boolean.parseBoolean(String.valueOf(quickPickSupport));
@@ -226,6 +231,7 @@ public class LSClientCapabilitiesImpl implements LSClientCapabilities {
         private boolean enableInlayHints = false;
         private boolean enableIndexPackages = false;
         private boolean enableMemoryUsageMonitor = false;
+        private boolean enableNaturalProgramming = false;
 
         @Override
         public boolean isBalaSchemeSupported() {
@@ -241,8 +247,17 @@ public class LSClientCapabilitiesImpl implements LSClientCapabilities {
             return enableSemanticTokens;
         }
 
+        @Override
+        public boolean isEnableNaturalProgramming() {
+            return enableNaturalProgramming;
+        }
+
         public void setEnableSemanticTokens(boolean enableSemanticTokens) {
             this.enableSemanticTokens = enableSemanticTokens;
+        }
+
+        public void setEnableNaturalProgramming(boolean enableNaturalProgramming) {
+            this.enableNaturalProgramming = enableNaturalProgramming;
         }
 
         @Override

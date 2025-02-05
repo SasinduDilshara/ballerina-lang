@@ -63,6 +63,11 @@ public interface InitializationOptions {
     String KEY_ENABLE_MEMORY_USAGE_MONITOR = "enableMemoryUsageMonitor";
 
     /**
+     * Whether the client supports features related to the natural programming.
+     */
+    String KEY_ENABLE_NATURAL_PROGRAMMING = "enableNaturalProgramming";
+
+    /**
      * Return if the client support bala URI scheme.
      *
      * @return True if bala URi scheme is supported.
@@ -116,4 +121,11 @@ public interface InitializationOptions {
      * @return True if supported, false otherwise
      */
     boolean isEnableMemoryUsageMonitor();
+
+    /**
+     * Returns if the client supports features related to the natural language.
+     *
+     * @return True if supported, false otherwise
+     */
+    boolean isEnableNaturalProgramming();
 }
